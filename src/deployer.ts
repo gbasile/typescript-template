@@ -1,5 +1,6 @@
 import { NS } from "@ns";
 import { deploy } from "./utils/deploy";
+import { can_gain_control } from "./utils/server-hacking";
 
 /** @param {NS} ns */
 export async function main(ns: NS): Promise<void> {
@@ -16,9 +17,9 @@ export async function auto_deploy(ns: NS, target: string, visitedHosts: Set<stri
     // Mark the target as visited
     visitedHosts.add(target);
 
-    if (target != "home") {
+    if (target != "home" && can_gain_control(ns, target)) {
         // ns.tprint(`Starting deploy on '${target}'`)
-        await deploy(ns, target, 'utils/virus.js', ['utils/best-server.js']);
+        await deploy(ns, target, 'utils/virus.js', ['utils/best-server.js', 'utils/server-hacking.js']);
     }
 
     // Explores connected nodes

@@ -18,8 +18,6 @@ export async function main(ns: NS): Promise<void> {
     // If the target's security level is higher than this, we'll weaken it before doing anything else
     const securityThresh: number = ns.getServerMinSecurityLevel(target);
 
-    await nuke_if_needed(ns, target);
-
     // Infinite loop that continuously hacks/grows/weakens the target server
     while (true) {
         if (ns.getServerSecurityLevel(target) > securityThresh) {
@@ -33,31 +31,4 @@ export async function main(ns: NS): Promise<void> {
             await ns.hack(target);
         }
     }
-}
-
-export async function nuke_if_needed(ns: NS, target: string): Promise<void> {
-    if (ns.hasRootAccess(target)) {
-        return
-    }
-
-    var openPorts = 0
-    // If we have the BruteSSH.exe program, use it to open the SSH Port on the target server
-    if (ns.fileExists("BruteSSH.exe", "home")) {
-        ns.brutessh(target);
-        openPorts += 1
-    }
-
-    // If we have the FTPCrack.exe program, use it to open the FTP Port on the target server
-    if (ns.fileExists("FTPCrack.exe", "home")) {
-        ns.ftpcrack(target);
-        openPorts += 1
-    }
-
-    // Get root access to target server
-    if (ns.getServerNumPortsRequired(target) <= openPorts) {
-        // ns.tprint("Can't get root access on this machine")
-        return
-    }
-
-    ns.nuke(target);
 }

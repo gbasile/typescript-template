@@ -1,4 +1,5 @@
 import { NS } from "@ns";
+import { deploy } from "./utils/deploy";
 
 /** @param {NS} ns */
 export async function main(ns: NS): Promise<void> {
@@ -18,8 +19,7 @@ export async function main(ns: NS): Promise<void> {
             // 3. Run our hacking script on the newly-purchased server with 3 threads
             // 4. Increment our iterator to indicate that we've bought a new server
             const hostname: string = ns.purchaseServer("pserv-" + i, ram);
-            await ns.scp("early-hack-template.js", hostname);
-            ns.exec("early-hack-template.js", hostname, 3);
+            await deploy(ns, hostname, 'utils/virus.js', ['utils/best-server.js', 'utils/server-hacking.js']);
             ++i;
         }
         // Make the script wait for a second before looping again.
