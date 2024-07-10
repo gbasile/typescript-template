@@ -4,10 +4,12 @@ import { can_be_hacked, can_gain_control } from "./server-hacking";
 class ServerInfo {
     name: string;
     maxMoney: number
+    moneyAvailable: number
 
-    constructor(name: string, maxMoney: number) {
+    constructor(name: string, maxMoney: number, moneyAvailable: number) {
         this.name = name;
         this.maxMoney = maxMoney;
+        this.moneyAvailable = moneyAvailable
     }
 }
 
@@ -20,7 +22,7 @@ export async function main(ns: NS): Promise<void> {
 export async function best_server(ns: NS, target: string, max_depth: number) {
     const server_infos = new Array<ServerInfo>();
     await get_server_infos(ns, target, server_infos, 0, max_depth)
-    const best_servers = server_infos.sort((a, b) => b.maxMoney - a.maxMoney);
+    const best_servers = server_infos.sort((a, b) => b.moneyAvailable - a.moneyAvailable);
     const hackable_servers = best_servers.filter((s) => can_be_hacked(ns, s.name))
     const top_servers = hackable_servers.slice(0, 10)
 
@@ -39,8 +41,11 @@ export async function get_server_infos(ns: NS, target: string, server_infos: Arr
     }
 
     var hosts: string[] = ns.scan(target);
-    const server_info = new ServerInfo(target, ns.getServerMaxMoney(target));
-    server_infos.push(server_info);
+    if (target != "home") {
+        const server_info = new ServerInfo(target, ns.getServerMaxMoney(target), ns.getServerMoneyAvailable(target));
+        server_infos.push(server_info);
+    }
+
     // ns.tprint(`'${target}' connected servers:\n ['${hosts.join(', ')}']`)
     for (var host of hosts) {
         await get_server_infos(ns, host, server_infos, depth + 1, max_depth);
