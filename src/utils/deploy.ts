@@ -31,7 +31,7 @@ export async function deploy(ns: NS, host: string, script: string, dependencies:
 
     // Get root access to target server
     if (!ns.hasRootAccess(host) && ns.getServerNumPortsRequired(host) > openPorts) {
-        ns.tprint(`Can't get root on ${host} with ${ns.getServerNumPortsRequired(host)} ports`);
+        // ns.tprint(`Can't get root on ${host} with ${ns.getServerNumPortsRequired(host)} ports`);
         return;
     }
 
@@ -45,7 +45,7 @@ export async function deploy(ns: NS, host: string, script: string, dependencies:
     const threads = Math.floor((ns.getServerMaxRam(host) - ns.getServerUsedRam(host)) / ns.getScriptRam(script));
 
     if (threads == 0) {
-        ns.tprint("Not enough ram");
+        // ns.tprint("Not enough ram");
         return;
     }
 
