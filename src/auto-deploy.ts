@@ -1,5 +1,5 @@
 import { NS } from "@ns";
-import { deploy } from "./deploy";
+import { deploy } from "./utils/deploy";
 
 /** @param {NS} ns */
 export async function main(ns: NS): Promise<void> {
@@ -18,7 +18,7 @@ export async function auto_deploy(ns: NS, target: string, visitedHosts: Set<stri
 
     if (target != "home") {
         // ns.tprint(`Starting deploy on '${target}'`)
-        await deploy(ns, target, 'virus.js', ['best-server.js']);
+        await deploy(ns, target, 'utils/virus.js', ['utils/best-server.js']);
     }
 
     // Explores connected nodes
