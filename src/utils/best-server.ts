@@ -19,11 +19,12 @@ export async function main(ns: NS): Promise<void> {
 
 export async function best_server(ns: NS, target: string, max_depth: number) {
     const server_infos = new Array<ServerInfo>();
-    await get_server_infos(ns, target, server_infos, 0, 3)
+    await get_server_infos(ns, target, server_infos, 0, max_depth)
     const best_servers = server_infos.sort((a, b) => b.maxMoney - a.maxMoney);
     const hackable_servers = best_servers.filter((s) => can_be_hacked(ns, s.name))
     const top_servers = hackable_servers.slice(0, 10)
 
+    // ns.tprint(`[${top_servers.map((s) => `"${s.name} (${s.maxMoney})"`).join(", ")}]`)
     return top_servers.map((s) => s.name);
 }
 
