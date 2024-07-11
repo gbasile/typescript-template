@@ -1,10 +1,18 @@
 import { NS } from "@ns";
 
-const ports_hackeables = 2;
-
 export function can_gain_control(ns: NS, host: string): boolean {
     if (ns.hasRootAccess(host)) {
         return true
+    }
+
+    var ports_hackeables = 0;
+
+    if (ns.fileExists("BruteSSH.exe", "home")) {
+        ports_hackeables += 1;
+    }
+
+    if (ns.fileExists("FTPCrack.exe", "home")) {
+        ports_hackeables += 1;
     }
 
     return ns.getServerNumPortsRequired(host) <= ports_hackeables
