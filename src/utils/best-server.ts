@@ -3,8 +3,8 @@ import { can_be_hacked, can_gain_control } from "./server-hacking";
 
 class ServerInfo {
     name: string;
-    maxMoney: number
-    moneyAvailable: number
+    maxMoney: number;
+    moneyAvailable: number;
 
     constructor(name: string, maxMoney: number, moneyAvailable: number) {
         this.name = name;
