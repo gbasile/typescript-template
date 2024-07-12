@@ -37,7 +37,7 @@ function buyRouter(ns: NS) {
     //     ns.singularity.purchaseTor()
     // }
 
-    if (ns.getServerMoneyAvailable("home") > 200_000_000) {
+    if (ns.getServerMoneyAvailable("home") > 200_000) {
         ns.tprint("WARN: Tor Router ready to be aquired!")
     }
 }
