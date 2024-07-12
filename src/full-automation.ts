@@ -3,7 +3,7 @@ import { availablePortExploits, portExploits } from "./utils/server-hacking";
 import { startAutoDeploy } from "./deployer";
 import { networkingTools } from "./utils/networking-tools";
 
-const purchasedServerTargetRam = 2 ** 4;
+const purchasedServerTargetRam = 2 ** 5;
 
 /** @param {NS} ns */
 export async function main(ns: NS): Promise<void> {

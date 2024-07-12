@@ -20,7 +20,7 @@ async function autoDeploy(ns: NS, target: string, visitedHosts: Set<string>) {
 
     if (target != "home" && canGainControl(ns, target)) {
         // ns.tprint(`Starting deploy on '${target}'`)
-        await deploy(ns, target, 'utils/virus.js', ['utils/best-server.js', 'utils/server-hacking.js']);
+        await deploy(ns, target, 'utils/virus.js', ['utils/server-hacking.js']);
     }
 
     // Explores connected nodes
