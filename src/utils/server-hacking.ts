@@ -22,11 +22,7 @@ export function canGainControl(ns: NS, host: string): boolean {
         return false
     }
 
-    var ports_hackeables = portExploits
-        .filter(([name, ,]) => ns.fileExists(name, "home"))
-        .reduce((acc,) => acc + 1, 0)
-
-    return ns.getServerNumPortsRequired(host) <= ports_hackeables
+    return ns.getServerNumPortsRequired(host) <= availablePortExploits(ns).length;
 }
 
 export function gainControl(ns: NS, host: string) {
