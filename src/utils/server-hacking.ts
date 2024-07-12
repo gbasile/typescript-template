@@ -41,7 +41,7 @@ export function gainControl(ns: NS, host: string) {
     ns.nuke(host);
 
     if (!ns.hasRootAccess(host)) {
-        ns.tprint(`Error: can not get root on ${host} with ${ns.getServerNumPortsRequired(host)} ports (we should)`);
+        ns.tprint(`ERROR: can not get root on ${host} with ${ns.getServerNumPortsRequired(host)} ports (we should)`);
         return false;
     }
 

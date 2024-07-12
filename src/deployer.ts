@@ -8,7 +8,7 @@ export async function main(ns: NS) {
 }
 
 export async function startAutoDeploy(ns: NS) {
-    ns.tprint(`Spreading the virus over the network`);
+    ns.tprint(`INFO: Spreading the virus over the network`);
     await autoDeploy(ns, "home", new Set<string>());
 }
 

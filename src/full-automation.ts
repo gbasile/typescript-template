@@ -38,7 +38,7 @@ function buyRouter(ns: NS) {
     // }
 
     if (ns.getServerMoneyAvailable("home") > 200_000_000) {
-        ns.tprint("Tor Router ready to be aquired!")
+        ns.tprint("WARN: Tor Router ready to be aquired!")
     }
 }
 
@@ -64,7 +64,7 @@ function printAvailableExploits(ns: NS) {
         .filter(([, cost,]) => ns.getServerMoneyAvailable("home") > cost)
         .forEach(([name, ,]) => {
             if (ns.hasTorRouter()) {
-                ns.tprint(`buy ${name}`)
+                ns.tprint(`WARN: buy ${name}`)
             }
         })
 }
@@ -75,7 +75,7 @@ function printAvailableNetworkingTools(ns: NS) {
         .filter(([, cost]) => ns.getServerMoneyAvailable("home") > cost)
         .forEach(([name,]) => {
             if (ns.hasTorRouter()) {
-                ns.tprint(`buy ${name}`)
+                ns.tprint(`WARN: buy ${name}`)
             }
         })
 }
@@ -92,7 +92,7 @@ async function buyServersRoutine(ns: NS) {
 
     const newServer = `minion-${ownedServers.length + 1}`;
     ns.purchaseServer(newServer, purchasedServerTargetRam)
-    ns.tprint(`Server purchased ${newServer}!`)
+    ns.tprint(`INFO: Server purchased ${newServer}!`)
 
     return true
 }
