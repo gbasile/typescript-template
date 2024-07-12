@@ -1,5 +1,5 @@
 import { NS } from "@ns";
-import { can_be_hacked, can_gain_control } from "./server-hacking";
+import { canGainControl } from "./server-hacking";
 
 class ServerInfo {
     name: string;
@@ -23,7 +23,7 @@ export async function best_server(ns: NS, target: string, max_depth: number) {
     const server_infos = new Array<ServerInfo>();
     await get_server_infos(ns, target, server_infos, 0, max_depth)
     const best_servers = server_infos.sort((a, b) => b.moneyAvailable - a.moneyAvailable);
-    const hackable_servers = best_servers.filter((s) => can_be_hacked(ns, s.name))
+    const hackable_servers = best_servers.filter((s) => canGainControl(ns, s.name))
     const top_servers = hackable_servers.slice(0, 10)
 
     // ns.tprint(`[${top_servers.map((s) => `"${s.name} (${s.maxMoney})"`).join(", ")}]`)

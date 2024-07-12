@@ -1,45 +1,53 @@
 import { NS } from "@ns";
 
-const exploits: [string, (ns: NS, host: string) => void][] = [
-    ["BruteSSH.exe", (ns: NS, host: string) => ns.brutessh(host)],
-    ["FTPCrack.exe", (ns: NS, host: string) => ns.ftpcrack(host)],
-    ["relaySMTP.exe", (ns: NS, host: string) => ns.relaysmtp(host)],
-    ["HTTPWorm.exe", (ns: NS, host: string) => ns.httpworm(host)],
-    ["SQLInject.exe", (ns: NS, host: string) => ns.sqlinject(host)]
+export const portExploits: [string, number, (ns: NS, host: string) => void][] = [
+    ["BruteSSH.exe", 500_000, (ns: NS, host: string) => ns.brutessh(host)],
+    ["FTPCrack.exe", 1_500_000, (ns: NS, host: string) => ns.ftpcrack(host)],
+    ["relaySMTP.exe", 5_000_000, (ns: NS, host: string) => ns.relaysmtp(host)],
+    ["HTTPWorm.exe", 30_000_000, (ns: NS, host: string) => ns.httpworm(host)],
+    ["SQLInject.exe", 250_000_000, (ns: NS, host: string) => ns.sqlinject(host)]
 ];
 
-export function can_gain_control(ns: NS, host: string): boolean {
+export function availablePortExploits(ns: NS) {
+    return portExploits
+        .filter(([name, ,]) => ns.fileExists(name, "home"))
+}
+
+export function canGainControl(ns: NS, host: string): boolean {
     if (ns.hasRootAccess(host)) {
         return true
     }
 
-    var ports_hackeables = 0;
+    if (ns.getServerRequiredHackingLevel(host) > ns.getHackingLevel()) {
+        return false
+    }
 
-    exploits
-        .filter(([name,]) => ns.fileExists(name, "home"))
+    var ports_hackeables = portExploits
+        .filter(([name, ,]) => ns.fileExists(name, "home"))
         .reduce((acc,) => acc + 1, 0)
 
     return ns.getServerNumPortsRequired(host) <= ports_hackeables
 }
 
-export function can_be_hacked(ns: NS, host: string): boolean {
-    return ns.getServerRequiredHackingLevel(host) <= ns.getHackingLevel()
-}
-
-export async function gain_control(ns: NS, host: string) {
-    if (!can_gain_control(ns, host)) {
-        return
+export function gainControl(ns: NS, host: string) {
+    if (ns.hasRootAccess(host)) {
+        return true;
     }
 
-    exploits
+    if (!canGainControl(ns, host)) {
+        return false;
+    }
+
+    portExploits
         .filter(([name,]) => ns.fileExists(name, "home"))
-        .forEach(([, method]) => method(ns, host))
-
-    // Get root access to target server
-    if (!ns.hasRootAccess(host)) {
-        // ns.tprint(`Can't get root on ${host} with ${ns.getServerNumPortsRequired(host)} ports`);
-        return;
-    }
+        .forEach(([, , method]) => method(ns, host))
 
     ns.nuke(host);
+
+    if (!ns.hasRootAccess(host)) {
+        ns.tprint(`Error: can not get root on ${host} with ${ns.getServerNumPortsRequired(host)} ports (we should)`);
+        return false;
+    }
+
+    return true;
 }

@@ -24,6 +24,6 @@ export async function main(ns: NS): Promise<void> {
         }
         // Make the script wait for a second before looping again.
         // Removing this line will cause an infinite loop and crash the game.
-        await ns.sleep(1000);
+        await ns.sleep(1_000);
     }
 }
