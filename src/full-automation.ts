@@ -2,28 +2,55 @@ import { NS } from "@ns";
 import { availablePortExploits, portExploits } from "./utils/server-hacking";
 import { startAutoDeploy } from "./deployer";
 import { networkingTools } from "./utils/networking-tools";
-
-const purchasedServerTargetRam = 2 ** 5;
+import { deploy } from "./utils/deploy";
+import { getScript, Phase, PhaseRequirements, phases } from "./utils/phases";
 
 /** @param {NS} ns */
 export async function main(ns: NS): Promise<void> {
-    await startAutoDeploy(ns);
+    buyRouter(ns);
 
-    while (true) {
-        buyRouter(ns);
-
-        await networkingToolsRoutine(ns);
-        var newExploits = await portExploitsRoutine(ns);
-        var newServers = await buyServersRoutine(ns);
-        var newUpgrades = await upgradeServersRoutine(ns);
-        if (newExploits || newServers || newUpgrades) {
-            await startAutoDeploy(ns);
-        }
-
-        // TODO Exploit again when hacking level changes 
-
-        await ns.sleep(5_000)
+    while (!ns.hasTorRouter()) {
+        await ns.sleep(1_000);
     }
+
+    for (var phase of phases) {
+        ns.tprint(`INFO: Phase started ${phase.name}`)
+        const start = new Date().getTime();
+        var phaseCompleted = false;
+        await startAutoDeploy(ns, phase);
+
+        while (!phaseCompleted) {
+            networkingToolsRoutine(ns);
+            var newExploits = portExploitsRoutine(ns);
+            buyServersRoutine(ns, phase);
+            upgradeServersRoutine(ns, phase);
+            if (newExploits) {
+                await startAutoDeploy(ns, phase);
+            }
+
+            phaseCompleted = requirementsMet(ns, phase.requirements);
+            if (phaseCompleted) {
+                const end = new Date().getTime();
+                const duration = end - start;
+                ns.tprint(`INFO: Phase completed in ${duration / 1000}s`)
+            }
+            await ns.sleep(5_000)
+        }
+    }
+}
+
+function requirementsMet(ns: NS, requirements: PhaseRequirements) {
+    // ns.tprint(`${requirements.portsExploited <= availablePortExploits(ns).length}`);
+    // ns.tprint(`${requirements.purchasedServer <= ns.getPurchasedServers().length}`);
+    // ns.tprint(`${requirements.purchasedServerRAM >= minPurchasedServerRam(ns)}`);
+    return requirements.portsExploited <= availablePortExploits(ns).length
+        && requirements.purchasedServer <= ns.getPurchasedServers().length
+        && requirements.purchasedServerRAM >= minPurchasedServerRam(ns)
+}
+
+function minPurchasedServerRam(ns: NS) {
+    return ns.getPurchasedServers()
+        .reduce((minRam, server) => Math.min(minRam, ns.getServerMaxRam(server)), 0)
 }
 
 function buyRouter(ns: NS) {
@@ -43,7 +70,7 @@ function buyRouter(ns: NS) {
 }
 
 var lastNumberExploits = 0;
-async function portExploitsRoutine(ns: NS) {
+function portExploitsRoutine(ns: NS) {
     // TODO Automatic buy exploits
     printAvailableExploits(ns);
     const numberOfAvailableExploits = availablePortExploits(ns).length;
@@ -52,61 +79,88 @@ async function portExploitsRoutine(ns: NS) {
     return newExploits
 }
 
-async function networkingToolsRoutine(ns: NS) {
+function networkingToolsRoutine(ns: NS) {
     // TODO Automatic buy networking Tools
+    if (availablePortExploits(ns).length < portExploits.length) {
+        return
+    }
     printAvailableNetworkingTools(ns);
 }
 
-
+var notifiedExploits = new Set<string>()
 function printAvailableExploits(ns: NS) {
-    portExploits
+    if (!ns.hasTorRouter()) {
+        return
+    }
+    var exploitsToPurchase = portExploits
         .filter(([name, ,]) => !ns.fileExists(name, "home"))
         .filter(([, cost,]) => ns.getServerMoneyAvailable("home") > cost)
-        .forEach(([name, ,]) => {
-            if (ns.hasTorRouter()) {
-                ns.tprint(`WARN: buy ${name}`)
-            }
-        })
-}
+        .filter(([name, ,]) => !notifiedExploits.has(name))
 
-function printAvailableNetworkingTools(ns: NS) {
-    networkingTools
-        .filter(([name,]) => !ns.fileExists(name, "home"))
-        .filter(([, cost]) => ns.getServerMoneyAvailable("home") > cost)
-        .forEach(([name,]) => {
-            if (ns.hasTorRouter()) {
-                ns.tprint(`WARN: buy ${name}`)
-            }
-        })
-}
-
-async function buyServersRoutine(ns: NS) {
-    const ownedServers = ns.getPurchasedServers();
-    if (ownedServers.length >= ns.getPurchasedServerLimit()) {
-        return false
+    if (exploitsToPurchase.length == 0) {
+        return
     }
 
-    if (ns.getServerMoneyAvailable("home") < ns.getPurchasedServerCost(purchasedServerTargetRam)) {
-        return false
+    exploitsToPurchase
+        .forEach(([name, ,]) => notifiedExploits.add(name));
+
+    var command = exploitsToPurchase
+        .reduce((command, [name, ,]) => `${command} buy ${name};`, ">");
+
+    ns.tprint(`WARN: Execute ${command}`)
+}
+
+var notifiedTools = new Set<string>()
+function printAvailableNetworkingTools(ns: NS) {
+    var networkingToolsToPurchase = networkingTools
+        .filter(([name,]) => !ns.fileExists(name, "home"))
+        .filter(([, cost]) => ns.getServerMoneyAvailable("home") > cost)
+        .filter(([name, ,]) => !notifiedTools.has(name))
+
+    if (networkingToolsToPurchase.length == 0) {
+        return
+    }
+
+    networkingToolsToPurchase
+        .forEach(([name, ,]) => notifiedTools.add(name));
+
+    var command = networkingToolsToPurchase
+        .reduce((command, [name, ,]) => `${command} buy ${name};`, ">");
+    ns.tprint(`WARN: Execute ${command}`)
+}
+
+function buyServersRoutine(ns: NS, phase: Phase) {
+    const ownedServers = ns.getPurchasedServers();
+    if (ownedServers.length >= ns.getPurchasedServerLimit()) {
+        return
+    }
+
+    if (ownedServers.length >= phase.requirements.purchasedServer) {
+        return
+    }
+
+    if (ns.getServerMoneyAvailable("home") < ns.getPurchasedServerCost(phase.requirements.purchasedServerRAM)) {
+        return
     }
 
     const newServer = `minion-${ownedServers.length + 1}`;
-    ns.purchaseServer(newServer, purchasedServerTargetRam)
+    ns.purchaseServer(newServer, phase.requirements.purchasedServerRAM)
     ns.tprint(`INFO: Server purchased ${newServer}!`)
-
-    return true
+    deploy(ns, newServer, getScript(phase));
 }
 
-async function upgradeServersRoutine(ns: NS) {
+function upgradeServersRoutine(ns: NS, phase: Phase) {
+    if (minPurchasedServerRam(ns) >= phase.requirements.purchasedServerRAM) {
+        return
+    }
+
     const ownedServers = ns.getPurchasedServers();
-    var upgraded = false
     for (const server of ownedServers) {
-        if (ns.getServerMaxRam(server) < purchasedServerTargetRam && ns.getServerMoneyAvailable("home") >= ns.getPurchasedServerCost(purchasedServerTargetRam)) {
-            if (ns.upgradePurchasedServer(server, purchasedServerTargetRam)) {
-                upgraded = true;
+        if (ns.getServerMaxRam(server) < phase.requirements.purchasedServerRAM && ns.getServerMoneyAvailable("home") >= ns.getPurchasedServerCost(phase.requirements.purchasedServerRAM)) {
+            if (ns.upgradePurchasedServer(server, phase.requirements.purchasedServerRAM)) {
+                ns.tprint(`INFO: Server ${server} upgraded to ${phase.requirements.purchasedServerRAM}!`)
+                deploy(ns, server, getScript(phase))
             }
         }
     }
-
-    return upgraded
 }

@@ -1,0 +1,77 @@
+export type PhaseTarget =
+    | { type: "dumb"; }
+    | { type: "greedy" }
+    | { type: "random-10" };
+
+export class PhaseConfig {
+    constructor(
+        public target: PhaseTarget
+    ) { }
+}
+
+export class PhaseRequirements {
+    constructor(
+        public portsExploited: number,
+        public purchasedServer: number,
+        public purchasedServerRAM: number,
+    ) { }
+}
+
+export class Phase {
+    constructor(
+        public name: string,
+        public config: PhaseConfig,
+        public requirements: PhaseRequirements,
+    ) { }
+}
+
+export const phases: Phase[] = [
+    // Greedy step: take eveything as soon as possible until we can hack a couple of ports
+    new Phase(
+        "0 - Greedy Start",
+        new PhaseConfig({ type: "greedy" }),
+        new PhaseRequirements(3, 0, 2 ** 0)
+    ),
+    new Phase(
+        "1 - Servers 8GB & All exploits",
+        new PhaseConfig({ type: "dumb" }),
+        new PhaseRequirements(5, 25, 2 ** 3)
+    ),
+    new Phase(
+        "2 - Servers 32GB",
+        new PhaseConfig({ type: "dumb" }),
+        new PhaseRequirements(5, 25, 2 ** 5)
+    ),
+    new Phase(
+        "3 - Servers 128GB",
+        new PhaseConfig({ type: "dumb" }),
+        new PhaseRequirements(5, 25, 2 ** 7)
+    ),
+
+    new Phase(
+        "4 - Servers 1TB",
+        new PhaseConfig({ type: "random-10" }),
+        new PhaseRequirements(5, 25, 2 ** 10)
+    ),
+    new Phase(
+        "5 - Servers 4TB",
+        new PhaseConfig({ type: "random-10" }),
+        new PhaseRequirements(5, 25, 2 ** 13)
+    ),
+    new Phase(
+        "6 - 6 exploits(infinity)",
+        new PhaseConfig({ type: "random-10" }),
+        new PhaseRequirements(6, 25, 2 ** 13)
+    ),
+];
+
+export function getScript(phase: Phase) {
+    switch (phase.config.target.type) {
+        case "dumb":
+            return 'utils/viruses/virus-dumb.js'
+        case "greedy":
+            return 'utils/viruses/virus-greedy.js'
+        case "random-10":
+            return 'utils/viruses/virus-best-of-10.js'
+    }
+}

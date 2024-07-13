@@ -1,32 +1,25 @@
 import { NS } from "@ns";
 import { deploy } from "./utils/deploy";
 import { canGainControl } from "./utils/server-hacking";
+import { getScript, Phase } from "./utils/phases";
 
-/** @param {NS} ns */
-export async function main(ns: NS) {
-    await startAutoDeploy(ns)
-}
-
-export async function startAutoDeploy(ns: NS) {
+export async function startAutoDeploy(ns: NS, phase: Phase) {
     ns.tprint(`INFO: Spreading the virus over the network`);
-    await autoDeploy(ns, "home", new Set<string>());
+    await autoDeploy(ns, "home", phase, new Set<string>());
 }
 
-async function autoDeploy(ns: NS, target: string, visitedHosts: Set<string>) {
-    if (visitedHosts.has(target)) {
+async function autoDeploy(ns: NS, currentHost: string, phase: Phase, visitedHosts: Set<string>) {
+    if (visitedHosts.has(currentHost)) {
         return;
     }
-    visitedHosts.add(target);
+    visitedHosts.add(currentHost);
 
-    if (target != "home" && canGainControl(ns, target)) {
-        // ns.tprint(`Starting deploy on '${target}'`)
-        await deploy(ns, target, 'utils/virus.js', ['utils/server-hacking.js']);
+    if (canGainControl(ns, currentHost)) {
+        await deploy(ns, currentHost, getScript(phase));
     }
 
-    // Explores connected nodes
-    var hosts: string[] = ns.scan(target);
-    // ns.tprint(`'${target}' connected servers:\n ['${hosts.join(', ')}']`)
+    var hosts: string[] = ns.scan(currentHost);
     for (var host of hosts) {
-        await autoDeploy(ns, host, visitedHosts);
+        await autoDeploy(ns, host, phase, visitedHosts);
     }
 }

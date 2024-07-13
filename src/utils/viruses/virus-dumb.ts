@@ -1,8 +1,8 @@
 import { NS } from "@ns";
 
 /** @param {NS} ns */
-export async function main(ns: NS): Promise<void> {
-    const target: string = "n00dles";
+export async function main(ns: NS) {
+    const target = "n00dles";
 
     // Defines how much money a server should have before we hack it
     // In this case, it is set to the maximum amount of money.
