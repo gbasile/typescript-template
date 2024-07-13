@@ -4,10 +4,10 @@ import { available_servers } from "../server-exploring";
 
 /** @param {NS} ns */
 export async function main(ns: NS) {
-    var changeServer = false;
     var alreadyHacked = new Set<string>()
 
     while (true) {
+        var changeServer = false;
         const servers = await available_servers(ns, "home", 10);
         const bestServers = servers
             .filter((server) => canGainControl(ns, server.name))
@@ -45,6 +45,6 @@ export async function main(ns: NS) {
                 }
             }
         }
+        ns.tprint(`ADEUUU`);
     }
-
 }

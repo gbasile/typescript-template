@@ -1,4 +1,4 @@
-import { NS, ScriptArg } from "@ns";
+import { NS } from "@ns";
 import { gainControl } from "./server-hacking";
 
 /** @param {NS} ns */
@@ -7,7 +7,7 @@ export async function deploy(ns: NS, host: string, script: string) {
     ns.killall(host);
 
     ns.scp(script, host);
-    const dependencies = ['utils/server-hacking.js'];
+    const dependencies = ['utils/server-hacking.js', 'utils/server-exploring.js'];
     for (var dependency of dependencies) {
         ns.scp(dependency, host)
     }
