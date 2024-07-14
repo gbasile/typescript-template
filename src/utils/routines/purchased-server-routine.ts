@@ -28,6 +28,7 @@ export function upgradeServersRoutine(ns: NS, phase: Phase) {
         return
     }
 
+    // ns.tprint(`Upgrading machines to ${phase.requirements.purchasedServerRAM}, cost: ${ns.getPurchasedServerCost(phase.requirements.purchasedServerRAM)}`)
     const ownedServers = ns.getPurchasedServers();
     for (const server of ownedServers) {
         if (ns.getServerMaxRam(server) < phase.requirements.purchasedServerRAM && ns.getServerMoneyAvailable("home") >= ns.getPurchasedServerCost(phase.requirements.purchasedServerRAM)) {
