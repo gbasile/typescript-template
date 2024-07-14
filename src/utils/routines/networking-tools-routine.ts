@@ -1,12 +1,9 @@
 import { NS } from "@ns";
 import { availablePortExploits, portExploits } from "../server-hacking";
 import { networkingTools } from "../networking-tools";
+import { Phase } from "../phases";
 
 export function networkingToolsRoutine(ns: NS) {
-    // TODO Automatic buy networking Tools
-    if (availablePortExploits(ns).length < portExploits.length) {
-        return
-    }
     printAvailableNetworkingTools(ns);
 }
 

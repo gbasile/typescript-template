@@ -2,7 +2,15 @@ import { NS } from "@ns";
 import { gainControl } from "./server-hacking";
 
 /** @param {NS} ns */
-export async function deploy(ns: NS, host: string, script: string) {
+
+/** @param {NS} ns */
+export async function main(ns: NS) {
+    let host = ns.args[0] as string
+    let script = ns.args[1] as string
+
+    deploy(ns, host, script);
+}
+export function deploy(ns: NS, host: string, script: string) {
     gainControl(ns, host);
     ns.killall(host);
 

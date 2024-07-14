@@ -1,7 +1,8 @@
 export type PhaseTarget =
     | { type: "dumb"; }
     | { type: "greedy" }
-    | { type: "random-10" };
+    | { type: "random-10" }
+    | { type: "best-10" };
 
 export class PhaseConfig {
     constructor(
@@ -14,6 +15,7 @@ export class PhaseRequirements {
         public portsExploited: number,
         public purchasedServer: number,
         public purchasedServerRAM: number,
+        public scripts: string[]
     ) { }
 }
 
@@ -30,39 +32,44 @@ export const phases: Phase[] = [
     new Phase(
         "0 - Greedy Start",
         new PhaseConfig({ type: "greedy" }),
-        new PhaseRequirements(3, 0, 2 ** 0)
+        new PhaseRequirements(3, 0, 2 ** 0, [])
     ),
     new Phase(
         "1 - Servers 8GB & All exploits",
         new PhaseConfig({ type: "dumb" }),
-        new PhaseRequirements(5, 25, 2 ** 3)
+        new PhaseRequirements(5, 25, 2 ** 3, [])
     ),
     new Phase(
         "2 - Servers 32GB",
         new PhaseConfig({ type: "dumb" }),
-        new PhaseRequirements(5, 25, 2 ** 5)
+        new PhaseRequirements(5, 25, 2 ** 5, [])
     ),
     new Phase(
         "3 - Servers 128GB",
         new PhaseConfig({ type: "dumb" }),
-        new PhaseRequirements(5, 25, 2 ** 7)
+        new PhaseRequirements(5, 25, 2 ** 7, [])
     ),
 
     new Phase(
         "4 - Servers 1TB",
         new PhaseConfig({ type: "random-10" }),
-        new PhaseRequirements(5, 25, 2 ** 10)
+        new PhaseRequirements(5, 25, 2 ** 10, [])
     ),
     new Phase(
-        "5 - Servers 4TB",
+        "5 - Formulas",
         new PhaseConfig({ type: "random-10" }),
-        new PhaseRequirements(5, 25, 2 ** 13)
+        new PhaseRequirements(5, 25, 2 ** 10, ["Formulas.exe"])
     ),
     new Phase(
-        "6 - 6 exploits(infinity)",
-        new PhaseConfig({ type: "random-10" }),
-        new PhaseRequirements(6, 25, 2 ** 13)
+        "6 - Servers 4TB",
+        new PhaseConfig({ type: "best-10" }),
+        new PhaseRequirements(5, 25, 2 ** 12, ["Formulas.exe"])
     ),
+    new Phase(
+        "7 - 6 exploits(infinity)",
+        new PhaseConfig({ type: "best-10" }),
+        new PhaseRequirements(6, 25, 2 ** 12, ["Formulas.exe"])
+    )
 ];
 
 export function getScript(phase: Phase) {
@@ -72,6 +79,8 @@ export function getScript(phase: Phase) {
         case "greedy":
             return 'utils/viruses/virus-greedy.js'
         case "random-10":
-            return 'utils/viruses/virus-best-of-10.js'
+            return 'utils/viruses/virus-best-random-10.js'
+        case "best-10":
+            return 'utils/viruses/virus-best-hack-10.js'
     }
 }
