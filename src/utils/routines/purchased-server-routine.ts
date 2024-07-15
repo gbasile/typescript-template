@@ -2,6 +2,7 @@ import { NS } from "@ns";
 import { getScript, Phase } from "../phases";
 import { deploy } from "../deploy";
 import { minPurchasedServerRam } from "../purchased-server";
+import { getIndex } from "../index-host-mapping";
 
 export function buyServersRoutine(ns: NS, phase: Phase) {
     const ownedServers = ns.getPurchasedServers();
@@ -20,7 +21,7 @@ export function buyServersRoutine(ns: NS, phase: Phase) {
     const newServer = `minion-${ownedServers.length + 1}`;
     ns.purchaseServer(newServer, phase.requirements.purchasedServerRAM)
     ns.tprint(`INFO: Server purchased ${newServer}!`)
-    deploy(ns, newServer, getScript(phase));
+    deploy(ns, newServer, getScript(phase), getIndex(newServer));
 }
 
 export function upgradeServersRoutine(ns: NS, phase: Phase) {
@@ -34,7 +35,7 @@ export function upgradeServersRoutine(ns: NS, phase: Phase) {
         if (ns.getServerMaxRam(server) < phase.requirements.purchasedServerRAM && ns.getServerMoneyAvailable("home") >= ns.getPurchasedServerCost(phase.requirements.purchasedServerRAM)) {
             if (ns.upgradePurchasedServer(server, phase.requirements.purchasedServerRAM)) {
                 ns.tprint(`INFO: Server ${server} upgraded to ${phase.requirements.purchasedServerRAM}!`)
-                deploy(ns, server, getScript(phase))
+                deploy(ns, server, getScript(phase), getIndex(server))
             }
         }
     }

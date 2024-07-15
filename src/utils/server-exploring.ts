@@ -1,4 +1,5 @@
 import { NS } from "@ns";
+import { canGainControl } from "./server-hacking";
 
 export class ServerInfo {
     name: string;
@@ -11,6 +12,8 @@ export class ServerInfo {
         this.moneyAvailable = moneyAvailable
     }
 }
+
+export const notHackableServers = new Set<string>(['CSEC', 'darkweb', 'home']);
 
 export async function available_servers(ns: NS, target: string, max_depth: number): Promise<ServerInfo[]> {
     const server_infos = new Array<ServerInfo>();

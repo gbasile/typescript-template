@@ -31,6 +31,7 @@ export function gainControl(ns: NS, host: string) {
     }
 
     if (!canGainControl(ns, host)) {
+        ns.tprint(`Trying to get control of ${host} but not possible`);
         return false;
     }
 

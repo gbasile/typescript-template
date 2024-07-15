@@ -41,12 +41,12 @@ export const phases: Phase[] = [
     ),
     new Phase(
         "2 - Servers 32GB",
-        new PhaseConfig({ type: "dumb" }),
+        new PhaseConfig({ type: "random-10" }),
         new PhaseRequirements(5, 25, 2 ** 5, [])
     ),
     new Phase(
         "3 - Servers 128GB",
-        new PhaseConfig({ type: "dumb" }),
+        new PhaseConfig({ type: "random-10" }),
         new PhaseRequirements(5, 25, 2 ** 7, [])
     ),
 

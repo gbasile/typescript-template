@@ -2,15 +2,13 @@ import { NS } from "@ns";
 import { gainControl } from "./server-hacking";
 
 /** @param {NS} ns */
-
-/** @param {NS} ns */
 export async function main(ns: NS) {
     let host = ns.args[0] as string
     let script = ns.args[1] as string
 
-    deploy(ns, host, script);
+    deploy(ns, host, script, -1);
 }
-export function deploy(ns: NS, host: string, script: string) {
+export function deploy(ns: NS, host: string, script: string, index: number) {
     gainControl(ns, host);
     ns.killall(host);
 
@@ -25,5 +23,5 @@ export function deploy(ns: NS, host: string, script: string) {
         return;
     }
 
-    ns.exec(script, host, threads);
+    ns.exec(script, host, threads, index);
 }
