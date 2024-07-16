@@ -50,7 +50,7 @@ async function getTarget(ns: NS, ideal_index: number): Promise<string> {
         .filter((server) => !server.name.startsWith('minion'))
         .filter((server) => server.moneyAvailable != 0)
         .filter((server) => !["n00dles", "zer0", "nectar-net", "omega-net"].includes(server.name))
-        .sort((a, b) => getFitness(ns, a.name) - getFitness(ns, b.name));
+        .sort((a, b) => getFitness(ns, b.name) - getFitness(ns, a.name));
 
     if (bestServers.length == 0) {
         ns.tprint(`ERROR: Not hackable servers available anymore, available servers: ${servers.reduce((acc, server) => `${acc}, [${server.name}|${server.moneyAvailable}|${server.maxMoney}}]`, "")}`);

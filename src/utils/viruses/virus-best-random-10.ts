@@ -18,8 +18,8 @@ export async function main(ns: NS) {
             .filter((server) => ns.getServerRequiredHackingLevel(server.name) < ns.getHackingLevel() / 2)
             .filter((server) => server.moneyAvailable != 0)
             .sort((a, b) =>
-                ns.getServerMaxMoney(a.name) / ns.getServerRequiredHackingLevel(a.name) -
-                ns.getServerMaxMoney(b.name) / ns.getServerRequiredHackingLevel(b.name)
+                ns.getServerMaxMoney(b.name) / ns.getServerRequiredHackingLevel(b.name) -
+                ns.getServerMaxMoney(a.name) / ns.getServerRequiredHackingLevel(a.name)
             );
 
         if (bestServers.length == 0) {
