@@ -24,7 +24,7 @@ function traverse(ns: NS, server: string, target: string, from: string): string 
             continue
         }
         if (child == target) {
-            return server + " => " + target
+            return `connect ${target};`
         }
         let children = ns.scan(server)
         if (children.length === 0) {
@@ -32,7 +32,7 @@ function traverse(ns: NS, server: string, target: string, from: string): string 
         }
         let foundOn = traverse(ns, child, target, server)
         if (foundOn != "") {
-            return server + " => " + foundOn
+            return `connect ${child}; ${foundOn}`
         }
     }
     return ""
