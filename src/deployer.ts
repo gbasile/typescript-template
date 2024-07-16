@@ -15,9 +15,11 @@ async function autoDeploy(ns: NS, currentHost: string, phase: Phase, visitedHost
     const servers = server_infos
         .map((server) => server.name);
 
-    const ownedServers = [...servers, 'home']
+    var ownedServers = servers
         .filter((server) => canGainControl(ns, server))
         .filter((server) => !notHackableServers.has(server));
+
+    ownedServers.push('home');
 
     for (const server of ownedServers) {
         deploy(ns, server, getScript(phase), getIndex(server));
