@@ -1,5 +1,5 @@
 import { NS } from "@ns";
-import { canGainControl } from "../server-hacking";
+import { canGainControl, gainControl } from "../server-hacking";
 import { notHackableServers } from "../server-exploring";
 
 /** @param {NS} ns */
@@ -11,12 +11,12 @@ export async function main(ns: NS) {
 
     // Infinite loop that continuously hacks/grows/weakens the target server
     while (true) {
-        const targets = ["n00dles", "zer0", "nectar-net", "omega-net"]
+        const targets = ["n00dles", "zer0", "nectar-net", "omega-net", "foodnstuff"]
             .filter((server) => canGainControl(ns, server))
             .filter((server) => !notHackableServers.has(server))
             .filter((server) => ns.getServerRequiredHackingLevel(server) < ns.getHackingLevel() / 2)
         const target = targets[ideal_index % targets.length]
-
+        gainControl(ns, target);
         const moneyThresh: number = ns.getServerMaxMoney(target) * 0.8;
         const securityThresh: number = ns.getServerMinSecurityLevel(target) * 1.3;
 

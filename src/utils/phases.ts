@@ -30,23 +30,23 @@ export class Phase {
 export const phases: Phase[] = [
     // Greedy step: take eveything as soon as possible until we can hack a couple of ports
     new Phase(
-        "0 - Greedy Start",
-        new PhaseConfig({ type: "greedy" }),
-        new PhaseRequirements(3, 0, 2 ** 0, [])
+        "0 - 4 exploits",
+        new PhaseConfig({ type: "dumb" }),
+        new PhaseRequirements(4, 10, 2 ** 0, [])
     ),
     new Phase(
-        "1 - Servers 8GB & All exploits",
+        "1 - Servers 8GB",
         new PhaseConfig({ type: "dumb" }),
         new PhaseRequirements(5, 25, 2 ** 3, [])
     ),
     new Phase(
         "2 - Servers 32GB",
-        new PhaseConfig({ type: "random-10" }),
+        new PhaseConfig({ type: "dumb" }),
         new PhaseRequirements(5, 25, 2 ** 5, [])
     ),
     new Phase(
         "3 - Servers 128GB",
-        new PhaseConfig({ type: "random-10" }),
+        new PhaseConfig({ type: "dumb" }),
         new PhaseRequirements(5, 25, 2 ** 7, [])
     ),
 
@@ -66,9 +66,24 @@ export const phases: Phase[] = [
         new PhaseRequirements(5, 25, 2 ** 12, ["Formulas.exe"])
     ),
     new Phase(
-        "7 - 6 exploits(infinity)",
+        "7 - Servers 32TB",
         new PhaseConfig({ type: "best-10" }),
-        new PhaseRequirements(6, 25, 2 ** 12, ["Formulas.exe"])
+        new PhaseRequirements(5, 25, 2 ** 15, ["Formulas.exe"])
+    ),
+    new Phase(
+        "8 - Servers 256TB",
+        new PhaseConfig({ type: "best-10" }),
+        new PhaseRequirements(5, 25, 2 ** 18, ["Formulas.exe"])
+    ),
+    new Phase(
+        "9 - Servers 1PB",
+        new PhaseConfig({ type: "best-10" }),
+        new PhaseRequirements(5, 25, 2 ** 20, ["Formulas.exe"])
+    ),
+    new Phase(
+        "10 - 6 exploits (infinity)",
+        new PhaseConfig({ type: "best-10" }),
+        new PhaseRequirements(6, 25, 2 ** 20, ["Formulas.exe"])
     )
 ];
 
