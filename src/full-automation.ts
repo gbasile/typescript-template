@@ -1,7 +1,7 @@
 import { NS } from "@ns";
 import { availablePortExploits, portExploits } from "./utils/server-hacking";
 import { startAutoDeploy } from "./utils/deployer";
-import { PhaseRequirements, phases } from "./utils/phases";
+import { nextPhase, PhaseRequirements, phases, requirementsMet } from "./utils/phases";
 import { networkingToolsRoutine } from "./utils/routines/networking-tools-routine";
 import { portExploitsRoutine } from "./utils/routines/port-exploits-routine";
 import { buyServersRoutine, upgradeServersRoutine } from "./utils/routines/purchased-server-routine";
@@ -11,8 +11,8 @@ import { minPurchasedServerRam } from "./utils/purchased-server";
 /** @param {NS} ns */
 export async function main(ns: NS): Promise<void> {
     await buyRouterRoutine(ns);
-
-    for (var phase of phases) {
+    var phase;
+    while (phase = nextPhase(ns)) {
         ns.tprint(`INFO: Phase started ${phase.name}`)
         const start = new Date().getTime();
         var phaseCompleted = false;
@@ -35,15 +35,4 @@ export async function main(ns: NS): Promise<void> {
             await ns.sleep(5_000)
         }
     }
-}
-
-function requirementsMet(ns: NS, requirements: PhaseRequirements) {
-
-    // ns.tprint(`${requirements.portsExploited <= availablePortExploits(ns).length}`);
-    // ns.tprint(`${requirements.purchasedServer <= ns.getPurchasedServers().length}`);
-    // ns.tprint(`${requirements.purchasedServerRAM} <= ${minPurchasedServerRam(ns)} = ${requirements.purchasedServerRAM <= minPurchasedServerRam(ns)}`);
-    return requirements.portsExploited <= availablePortExploits(ns).length
-        && requirements.purchasedServer <= ns.getPurchasedServers().length
-        && requirements.purchasedServerRAM <= minPurchasedServerRam(ns)
-        && requirements.scripts.every((script) => ns.fileExists(script))
 }

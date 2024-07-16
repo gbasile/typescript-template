@@ -1,3 +1,7 @@
+import { NS } from "@ns";
+import { availablePortExploits } from "./server-hacking";
+import { minPurchasedServerRam } from "./purchased-server";
+
 export type PhaseTarget =
     | { type: "dumb"; }
     | { type: "greedy" }
@@ -49,7 +53,6 @@ export const phases: Phase[] = [
         new PhaseConfig({ type: "dumb" }),
         new PhaseRequirements(5, 25, 2 ** 7, [])
     ),
-
     new Phase(
         "4 - Servers 1TB",
         new PhaseConfig({ type: "random-10" }),
@@ -86,6 +89,27 @@ export const phases: Phase[] = [
         new PhaseRequirements(6, 25, 2 ** 20, ["Formulas.exe"])
     )
 ];
+
+export function nextPhase(ns: NS): Phase {
+    for (const phase of phases) {
+        if (!requirementsMet(ns, phase.requirements)) {
+            return phase;
+        }
+    }
+
+    return phases[phases.length - 1]
+}
+
+export function requirementsMet(ns: NS, requirements: PhaseRequirements) {
+
+    // ns.tprint(`${requirements.portsExploited <= availablePortExploits(ns).length}`);
+    // ns.tprint(`${requirements.purchasedServer <= ns.getPurchasedServers().length}`);
+    // ns.tprint(`${requirements.purchasedServerRAM} <= ${minPurchasedServerRam(ns)} = ${requirements.purchasedServerRAM <= minPurchasedServerRam(ns)}`);
+    return requirements.portsExploited <= availablePortExploits(ns).length
+        && requirements.purchasedServer <= ns.getPurchasedServers().length
+        && requirements.purchasedServerRAM <= minPurchasedServerRam(ns)
+        && requirements.scripts.every((script) => ns.fileExists(script))
+}
 
 export function getScript(phase: Phase) {
     switch (phase.config.target.type) {
