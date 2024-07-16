@@ -1,9 +1,9 @@
 import { NS } from "@ns";
-import { deploy } from "./utils/deploy";
-import { canGainControl } from "./utils/server-hacking";
-import { getScript, Phase } from "./utils/phases";
-import { available_servers, notHackableServers } from "./utils/server-exploring";
-import { getIndex } from "./utils/index-host-mapping";
+import { deploy } from "./deploy";
+import { canGainControl } from "./server-hacking";
+import { getScript, Phase } from "./phases";
+import { available_servers, notHackableServers } from "./server-exploring";
+import { getIndex } from "./index-host-mapping";
 
 export async function startAutoDeploy(ns: NS, phase: Phase) {
     ns.tprint(`INFO: Spreading the virus over the network`);

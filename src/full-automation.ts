@@ -1,6 +1,6 @@
 import { NS } from "@ns";
 import { availablePortExploits, portExploits } from "./utils/server-hacking";
-import { startAutoDeploy } from "./deployer";
+import { startAutoDeploy } from "./utils/deployer";
 import { PhaseRequirements, phases } from "./utils/phases";
 import { networkingToolsRoutine } from "./utils/routines/networking-tools-routine";
 import { portExploitsRoutine } from "./utils/routines/port-exploits-routine";
