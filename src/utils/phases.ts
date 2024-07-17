@@ -34,23 +34,23 @@ export class Phase {
 export const phases: Phase[] = [
     // Greedy step: take eveything as soon as possible until we can hack a couple of ports
     new Phase(
-        "0 - 4 exploits",
+        "0 - Servers 8GB",
         new PhaseConfig({ type: "dumb" }),
-        new PhaseRequirements(4, 10, 2 ** 0, [])
+        new PhaseRequirements(3, 25, 2 ** 3, [])
     ),
     new Phase(
-        "1 - Servers 8GB",
+        "1 - Servers 8GB + All port exploits",
         new PhaseConfig({ type: "dumb" }),
         new PhaseRequirements(5, 25, 2 ** 3, [])
     ),
     new Phase(
         "2 - Servers 32GB",
-        new PhaseConfig({ type: "dumb" }),
+        new PhaseConfig({ type: "random-10" }),
         new PhaseRequirements(5, 25, 2 ** 5, [])
     ),
     new Phase(
         "3 - Servers 128GB",
-        new PhaseConfig({ type: "dumb" }),
+        new PhaseConfig({ type: "random-10" }),
         new PhaseRequirements(5, 25, 2 ** 7, [])
     ),
     new Phase(
