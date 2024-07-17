@@ -17,10 +17,7 @@ export async function main(ns: NS) {
             .filter((server) => !server.name.startsWith('minion'))
             .filter((server) => ns.getServerRequiredHackingLevel(server.name) < ns.getHackingLevel() / 2)
             .filter((server) => server.moneyAvailable != 0)
-            .sort((a, b) =>
-                ns.getServerMaxMoney(b.name) / ns.getServerRequiredHackingLevel(b.name) -
-                ns.getServerMaxMoney(a.name) / ns.getServerRequiredHackingLevel(a.name)
-            );
+            .sort((a, b) => getFitness(ns, b.name) - getFitness(ns, a.name));
 
         if (bestServers.length == 0) {
             ns.tprint(`ERROR: Not hackable servers available anymore, available servers: ${servers.reduce((acc, server) => `${acc}, [${server.name}|${server.moneyAvailable}|${server.maxMoney}}]`, "")}`);
@@ -48,4 +45,8 @@ export async function main(ns: NS) {
             }
         }
     }
+}
+
+function getFitness(ns: NS, host: string) {
+    return ns.getServerMaxMoney(host) / ns.getServerRequiredHackingLevel(host)
 }
