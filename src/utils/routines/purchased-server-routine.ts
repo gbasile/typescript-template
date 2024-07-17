@@ -18,7 +18,8 @@ export function buyServersRoutine(ns: NS, phase: Phase) {
         return
     }
 
-    const newServer = `minion-${ownedServers.length + 1}`;
+    const serverNumber = (ownedServers.length + 1).toString().padStart(2, '0');
+    const newServer = `minion-${serverNumber}`;
     ns.purchaseServer(newServer, phase.requirements.purchasedServerRAM)
     ns.tprint(`INFO: Server purchased ${newServer}!`)
     deploy(ns, newServer, getScript(phase), getIndex(newServer));
