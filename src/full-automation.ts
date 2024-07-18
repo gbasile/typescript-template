@@ -1,12 +1,10 @@
 import { NS } from "@ns";
-import { availablePortExploits, portExploits } from "./utils/server-hacking";
 import { startAutoDeploy } from "./utils/deployer";
-import { nextPhase, PhaseRequirements, phases, requirementsMet } from "./utils/phases";
+import { nextPhase, requirementsMet } from "./utils/phases";
 import { networkingToolsRoutine } from "./utils/routines/networking-tools-routine";
 import { portExploitsRoutine } from "./utils/routines/port-exploits-routine";
 import { buyServersRoutine, upgradeServersRoutine } from "./utils/routines/purchased-server-routine";
 import { buyRouterRoutine } from "./utils/routines/buy-router-routine";
-import { minPurchasedServerRam } from "./utils/purchased-server";
 
 /** @param {NS} ns */
 export async function main(ns: NS): Promise<void> {
@@ -21,9 +19,9 @@ export async function main(ns: NS): Promise<void> {
         while (!phaseCompleted) {
             networkingToolsRoutine(ns);
             var newExploits = portExploitsRoutine(ns);
-            buyServersRoutine(ns, phase);
-            upgradeServersRoutine(ns, phase);
-            if (newExploits) {
+            var newServers = buyServersRoutine(ns, phase);
+            var newUpgrades = upgradeServersRoutine(ns, phase);
+            if (newExploits || newServers || newUpgrades) {
                 await startAutoDeploy(ns, phase);
             }
 

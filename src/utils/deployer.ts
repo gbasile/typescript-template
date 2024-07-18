@@ -1,16 +1,16 @@
 import { NS } from "@ns";
 import { deploy } from "./deploy";
 import { canGainControl } from "./server-hacking";
-import { getScript, Phase } from "./phases";
+import { Phase } from "./phases";
 import { available_servers, notHackableServers } from "./server-exploring";
 import { getIndex } from "./index-host-mapping";
 
 export async function startAutoDeploy(ns: NS, phase: Phase) {
     ns.tprint(`INFO: Spreading the virus over the network`);
-    await autoDeploy(ns, "home", phase, new Set<string>());
+    await autoDeploy(ns, phase);
 }
 
-async function autoDeploy(ns: NS, currentHost: string, phase: Phase, visitedHosts: Set<string>) {
+async function autoDeploy(ns: NS, phase: Phase) {
     const server_infos = await available_servers(ns, "home", 10);
     const servers = server_infos
         .map((server) => server.name);
@@ -20,8 +20,13 @@ async function autoDeploy(ns: NS, currentHost: string, phase: Phase, visitedHost
         .filter((server) => !notHackableServers.has(server));
 
     ownedServers.push('home');
-
-    for (const server of ownedServers) {
-        deploy(ns, server, getScript(phase), getIndex(server));
+    switch (phase.config.deployment.strategy.name) {
+        case 'copy':
+            for (const server of ownedServers) {
+                deploy(ns, server, phase.config.deployment.script, getIndex(server));
+            }
+            break;
+        case 'run-once':
+            ns.exec(phase.config.deployment.script, 'home');
     }
 }

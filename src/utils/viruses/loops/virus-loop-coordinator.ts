@@ -1,10 +1,10 @@
 import { NS } from "@ns";
-import { available_servers } from "/utils/server-exploring";
+import { available_servers, notHackableServers } from "/utils/server-exploring";
 import { canGainControl, gainControl } from "/utils/server-hacking";
 
-const hackRatio = 0.1;
-const weakenRatio = 0.2;
-const growRatio = 0.7;
+const hackRatio = 0.15;
+const weakenRatio = 0.05;
+const growRatio = 0.80;
 
 var ramAllocatedToHack = 0;
 var ramAllocatedToWeaken = 0;
@@ -14,7 +14,7 @@ var ramAvailable = 0
 
 /** @param {NS} ns */
 export async function main(ns: NS) {
-    const target = "nectar-net";
+    const target = await bestTarget(ns);
     const serverInfos = await available_servers(ns, "home");
     const hackableHosts = serverInfos
         .filter((server) => canGainControl(ns, server.name))
@@ -51,7 +51,7 @@ export async function main(ns: NS) {
             if (numberOfThreads == 0) {
                 break;
             }
-            ns.tprint(`Hacking from ${host}/${numberOfThreads}`)
+            // ns.tprint(`Hacking from ${host}/${numberOfThreads}`)
             ramAllocatedToHack += ramToAllocate
             await ns.sleep(Math.random() * 500);
             ns.scp(hackScript, host);
@@ -64,7 +64,7 @@ export async function main(ns: NS) {
             if (numberOfThreads == 0) {
                 break;
             }
-            ns.tprint(`Growing from ${host}/${numberOfThreads}`)
+            // ns.tprint(`Growing from ${host}/${numberOfThreads}`)
             ramAllocatedToGrow += ramToAllocate
             await ns.sleep(Math.random() * 500);
             ns.scp(growScript, host);
@@ -77,7 +77,7 @@ export async function main(ns: NS) {
             if (numberOfThreads == 0) {
                 break;
             }
-            ns.tprint(`Weakening from ${host}/${numberOfThreads}`)
+            // ns.tprint(`Weakening from ${host}/${numberOfThreads}`)
             ramAllocatedToWeaken += ramToAllocate
             await ns.sleep(Math.random() * 500);
             ns.scp(weakenScript, host);
@@ -92,7 +92,23 @@ function desiredRam(ns: NS): [number, number, number] {
     let desiredRamToGrow = ramAvailable * growRatio;
     let desiredRamToWeaken = ramAvailable * weakenRatio;
 
-    ns.tprint(`Desired hack/${desiredRamToHack} grow/${desiredRamToGrow} weaken/${desiredRamToWeaken}`);
+    // ns.tprint(`Desired hack/${desiredRamToHack} grow/${desiredRamToGrow} weaken/${desiredRamToWeaken}`);
     return [desiredRamToHack, desiredRamToGrow, desiredRamToWeaken];
 
+}
+
+async function bestTarget(ns: NS) {
+    const servers = await available_servers(ns, "home", 10);
+    const bestServers = servers
+        .filter((server) => canGainControl(ns, server.name))
+        .filter((server) => !notHackableServers.has(server.name))
+        .filter((server) => !server.name.startsWith('minion'))
+        .filter((server) => ns.getServerRequiredHackingLevel(server.name) < ns.getHackingLevel() / 2)
+        .filter((server) => server.moneyAvailable != 0)
+        .sort((a, b) => getFitness(ns, b.name) - getFitness(ns, a.name));
+    return bestServers[0].name;
+}
+
+function getFitness(ns: NS, host: string) {
+    return ns.getServerMaxMoney(host) / ns.getServerRequiredHackingLevel(host)
 }
