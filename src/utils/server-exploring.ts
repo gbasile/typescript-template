@@ -1,5 +1,14 @@
 import { NS } from "@ns";
-import { canGainControl } from "./server-hacking";
+
+/** @param {NS} ns */
+export async function main(ns: NS) {
+    const servers = await available_servers(ns, "home", 200);
+    servers.forEach(
+        (server) => {
+            ns.tprint(`${server.name}`)
+        }
+    )
+}
 
 export class ServerInfo {
     name: string;
@@ -15,7 +24,7 @@ export class ServerInfo {
 
 export const notHackableServers = new Set<string>(['CSEC', 'darkweb', 'home']);
 
-export async function available_servers(ns: NS, target: string, max_depth: number): Promise<ServerInfo[]> {
+export async function available_servers(ns: NS, target: string, max_depth: number = 1000): Promise<ServerInfo[]> {
     const server_infos = new Array<ServerInfo>();
     await get_server_infos(ns, target, server_infos, 0, max_depth)
 
