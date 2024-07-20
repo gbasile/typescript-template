@@ -2,7 +2,7 @@ import { NS } from "@ns";
 
 /** @param {NS} ns */
 export async function main(ns: NS) {
-    const servers = await available_servers(ns, "home", 200);
+    const servers = await available_servers(ns, "home");
     servers.forEach(
         (server) => {
             ns.tprint(`${server.name}`)

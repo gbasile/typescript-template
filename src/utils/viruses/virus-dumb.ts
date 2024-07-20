@@ -14,7 +14,7 @@ export async function main(ns: NS) {
         const targets = ["n00dles", "zer0", "nectar-net", "omega-net", "foodnstuff"]
             .filter((server) => canGainControl(ns, server))
             .filter((server) => !notHackableServers.has(server))
-            .filter((server) => ns.getServerRequiredHackingLevel(server) < ns.getHackingLevel() / 2)
+            .filter((server) => ns.getServerRequiredHackingLevel(server) <= ns.getHackingLevel())
         const target = targets[ideal_index % targets.length]
         gainControl(ns, target);
         const moneyThresh: number = ns.getServerMaxMoney(target) * 0.8;

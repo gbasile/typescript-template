@@ -2,15 +2,11 @@ import { NS } from "@ns";
 import { available_servers, notHackableServers } from "/utils/server-exploring";
 import { canGainControl, gainControl } from "/utils/server-hacking";
 
-const hackRatio = 0.15;
-const weakenRatio = 0.05;
+const hackRatio = 0.10;
+const weakenRatio = 0.10;
 const growRatio = 0.80;
 
-var ramAllocatedToHack = 0;
-var ramAllocatedToWeaken = 0;
-var ramAllocatedToGrow = 0;
-var ramAvailable = 0
-
+var ramAvailable = 0;
 
 /** @param {NS} ns */
 export async function main(ns: NS) {
@@ -23,9 +19,9 @@ export async function main(ns: NS) {
 
     ramAvailable = allHosts.reduce((acc, host) => acc + ns.getServerMaxRam(host), 0);
 
-    ramAllocatedToHack = 0;
-    ramAllocatedToWeaken = 0;
-    ramAllocatedToGrow = 0;
+    var ramAllocatedToHack = 0;
+    var ramAllocatedToWeaken = 0;
+    var ramAllocatedToGrow = 0;
 
     const hackScript = 'utils/viruses/loops/virus-loop-hack.js';
     const hackScriptRam = ns.getScriptRam(hackScript);
@@ -53,7 +49,6 @@ export async function main(ns: NS) {
             }
             // ns.tprint(`Hacking from ${host}/${numberOfThreads}`)
             ramAllocatedToHack += ramToAllocate
-            await ns.sleep(Math.random() * 500);
             ns.scp(hackScript, host);
             ns.exec(hackScript, host, { threads: numberOfThreads }, target);
         }
@@ -66,7 +61,6 @@ export async function main(ns: NS) {
             }
             // ns.tprint(`Growing from ${host}/${numberOfThreads}`)
             ramAllocatedToGrow += ramToAllocate
-            await ns.sleep(Math.random() * 500);
             ns.scp(growScript, host);
             ns.exec(growScript, host, { threads: numberOfThreads }, target);
         }
@@ -79,7 +73,6 @@ export async function main(ns: NS) {
             }
             // ns.tprint(`Weakening from ${host}/${numberOfThreads}`)
             ramAllocatedToWeaken += ramToAllocate
-            await ns.sleep(Math.random() * 500);
             ns.scp(weakenScript, host);
             ns.exec(weakenScript, host, { threads: numberOfThreads }, target);
         }
@@ -110,5 +103,5 @@ async function bestTarget(ns: NS) {
 }
 
 function getFitness(ns: NS, host: string) {
-    return ns.getServerMaxMoney(host) / ns.getServerRequiredHackingLevel(host)
+    return ns.getServerMaxMoney(host) * ns.getServerRequiredHackingLevel(host)
 }

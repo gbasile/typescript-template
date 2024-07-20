@@ -48,5 +48,7 @@ export async function main(ns: NS) {
 }
 
 function getFitness(ns: NS, host: string) {
-    return ns.getServerMaxMoney(host) / ns.getServerRequiredHackingLevel(host)
+    const growthFactor = ns.getServerMoneyAvailable(host) * ns.getServerGrowth(host);
+    const distanceFactor = 1 / 10 * ns.getServerRequiredHackingLevel(host) - ns.getHackingLevel()
+    return ns.getServerMaxMoney(host) * growthFactor * distanceFactor
 }

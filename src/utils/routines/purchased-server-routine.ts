@@ -22,7 +22,7 @@ export function buyServersRoutine(ns: NS, phase: Phase) {
     const newServer = `minion-${serverNumber}`;
     ns.purchaseServer(newServer, phase.requirements.purchasedServerRAM)
     ns.tprint(`INFO: Server purchased ${newServer}!`)
-    return;
+    return true;
 }
 
 export function upgradeServersRoutine(ns: NS, phase: Phase) {

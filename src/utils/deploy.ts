@@ -10,10 +10,16 @@ export async function main(ns: NS) {
 }
 export function deploy(ns: NS, host: string, script: string, index: number) {
     gainControl(ns, host);
-    ns.killall(host);
+    var processInfos = ns.ps(host);
+    const processInfosToKill = processInfos
+        .filter((process) => process.filename != ns.getScriptName())
+    for (var process of processInfosToKill) {
+        ns.kill(process.pid);
+    }
+
 
     ns.scp(script, host);
-    const dependencies = ['utils/server-hacking.js', 'utils/server-exploring.js'];
+    const dependencies = ['utils/server-hacking.js', 'utils/server-exploring.js', 'utils/find-server.js'];
     for (var dependency of dependencies) {
         ns.scp(dependency, host)
     }
@@ -23,5 +29,5 @@ export function deploy(ns: NS, host: string, script: string, index: number) {
         return;
     }
 
-    ns.exec(script, host, threads, index);
+    ns.exec(script, host, threads, index)
 }

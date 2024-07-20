@@ -6,5 +6,6 @@ export async function main(ns: NS) {
 
     while (true) {
         await ns.weaken(target);
+        await ns.sleep(Math.random() * 5_000);
     }
 }

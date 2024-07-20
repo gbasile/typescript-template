@@ -4,7 +4,7 @@ import { NS } from "@ns";
 export async function main(ns: NS) {
     let target = ns.args[0] as string
 
-    let path = traverse(ns, "home", target, "home")
+    let path = connectCommand(ns, "home", target, "home")
     if (path == "") {
         ns.tprint("Could not find " + target)
         return
@@ -13,7 +13,7 @@ export async function main(ns: NS) {
     ns.tprint(path)
 }
 
-function traverse(ns: NS, server: string, target: string, from: string): string {
+export function connectCommand(ns: NS, server: string, target: string, from: string): string {
     if (server == target) {
         return target
     }
@@ -30,7 +30,7 @@ function traverse(ns: NS, server: string, target: string, from: string): string 
         if (children.length === 0) {
             continue
         }
-        let foundOn = traverse(ns, child, target, server)
+        let foundOn = connectCommand(ns, child, target, server)
         if (foundOn != "") {
             return `connect ${child}; ${foundOn}`
         }

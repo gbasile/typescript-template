@@ -1,4 +1,5 @@
 import { NS } from "@ns";
+import { connectCommand } from "./find-server";
 
 export const portExploits: [string, number, (ns: NS, host: string) => void][] = [
     ["BruteSSH.exe", 500_000, (ns: NS, host: string) => ns.brutessh(host)],
@@ -7,6 +8,27 @@ export const portExploits: [string, number, (ns: NS, host: string) => void][] = 
     ["HTTPWorm.exe", 30_000_000, (ns: NS, host: string) => ns.httpworm(host)],
     ["SQLInject.exe", 250_000_000, (ns: NS, host: string) => ns.sqlinject(host)]
 ];
+
+/** @param {NS} ns */
+export async function main(ns: NS) {
+    const target = ns.args[0] as string;
+    if (!canGainControl(ns, target)) {
+        ns.tprint(`${target} can't be hacked`);
+        return
+    }
+    portExploits.forEach(
+        ([file, , command]) => {
+            if (ns.fileExists(file, 'home')) {
+                command(ns, target);
+            }
+        }
+    )
+
+    ns.nuke(target);
+
+    const path = connectCommand(ns, ns.getHostname(), target, ns.getHostname());
+    ns.tprint(`${path} backdoor`);
+}
 
 export function availablePortExploits(ns: NS) {
     return portExploits
