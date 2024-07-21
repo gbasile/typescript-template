@@ -3,14 +3,20 @@ import { NS } from "@ns";
 /** @param {NS} ns */
 export async function main(ns: NS) {
     const servers = await available_servers(ns);
-    servers.forEach(
-        (server) => {
-            ns.tprint(`${server}`)
-        }
-    )
+    ns.tprint(`${servers.join(",")}`)
 }
 
-export const notHackableServers = new Set<string>(['CSEC', 'darkweb', 'home']);
+export function canRunScript(server: string) {
+    if (['CSEC', 'darkweb'].includes(server)) {
+        return false
+    }
+
+    return !server.startsWith('minion-')
+}
+
+export function validHackTarget(server: string) {
+    return server != "home" && !server.startsWith('minion-')
+}
 
 export async function available_servers(ns: NS, from: string = "home", max_depth: number = 1000): Promise<string[]> {
     const servers = new Array<string>();

@@ -1,6 +1,6 @@
 import { NS } from "@ns";
 import { canGainControl, gainControl } from "../server-hacking";
-import { notHackableServers } from "../server-exploring";
+import { canRunScript, validHackTarget } from "../server-exploring";
 
 /** @param {NS} ns */
 export async function main(ns: NS) {
@@ -13,7 +13,8 @@ export async function main(ns: NS) {
     while (true) {
         const targets = ["n00dles", "zer0", "nectar-net", "omega-net", "foodnstuff"]
             .filter((server) => canGainControl(ns, server))
-            .filter((server) => !notHackableServers.has(server))
+            .filter(canRunScript)
+            .filter(validHackTarget)
             .filter((server) => ns.getServerRequiredHackingLevel(server) <= ns.getHackingLevel())
         const target = targets[ideal_index % targets.length]
         gainControl(ns, target);

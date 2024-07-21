@@ -2,7 +2,7 @@ import { NS } from "@ns";
 import { deploy } from "./deploy";
 import { canGainControl } from "./server-hacking";
 import { Phase } from "./phases";
-import { available_servers, notHackableServers } from "./server-exploring";
+import { available_servers, canRunScript } from "./server-exploring";
 import { getIndex } from "./index-host-mapping";
 
 export async function startAutoDeploy(ns: NS, phase: Phase) {
@@ -13,14 +13,14 @@ export async function startAutoDeploy(ns: NS, phase: Phase) {
 async function autoDeploy(ns: NS, phase: Phase) {
     const servers = await available_servers(ns);
 
-    var ownedServers = servers
+    var hackableServers = servers
         .filter((server) => canGainControl(ns, server))
-        .filter((server) => !notHackableServers.has(server));
+        .filter(canRunScript);
 
-    ownedServers.push('home');
+    hackableServers.push('home');
     switch (phase.config.deployment.strategy.name) {
         case 'copy':
-            for (const server of ownedServers) {
+            for (const server of hackableServers) {
                 deploy(ns, server, phase.config.deployment.script, getIndex(server));
             }
             break;

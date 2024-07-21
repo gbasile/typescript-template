@@ -1,6 +1,6 @@
 import { NS } from "@ns";
 import { canGainControl, gainControl } from "../server-hacking";
-import { available_servers, notHackableServers } from "../server-exploring";
+import { available_servers, canRunScript, validHackTarget } from "../server-exploring";
 
 /** @param {NS} ns */
 export async function main(ns: NS) {
@@ -46,8 +46,8 @@ async function getTarget(ns: NS, ideal_index: number): Promise<string> {
 
     const bestServers = servers
         .filter((server) => canGainControl(ns, server))
-        .filter((server) => !notHackableServers.has(server))
-        .filter((server) => !server.startsWith('minion'))
+        .filter(canRunScript)
+        .filter(validHackTarget)
         .filter((server) => ns.getServerMoneyAvailable(server) != 0)
         .filter((server) => !["n00dles", "zer0", "nectar-net", "omega-net"].includes(server))
         .sort((a, b) => getFitness(ns, b) - getFitness(ns, a));

@@ -1,13 +1,13 @@
 import { NS } from "@ns";
 import { canGainControl, gainControl } from "../server-hacking";
-import { available_servers } from "../server-exploring";
+import { available_servers, validHackTarget } from "../server-exploring";
 
 /** @param {NS} ns */
 export async function main(ns: NS): Promise<void> {
     while (true) {
         const servers = (await available_servers(ns, "home"))
             .filter((server) => canGainControl(ns, server))
-            .filter((server) => !server.startsWith('minion'))
+            .filter(validHackTarget)
             .sort((a, b) => ns.getServerMoneyAvailable(b) - ns.getServerMoneyAvailable(a));
 
         const hackingLevel = ns.getHackingLevel()
