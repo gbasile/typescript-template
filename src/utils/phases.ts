@@ -55,7 +55,7 @@ export const phases: Phase[] = [
         new PhaseRequirements(3, 0, 2 ** 3, 0, [])
     ),
     new Phase(
-        "0B - Servers 32GB",
+        "0B - Servers 8GB",
         new PhaseConfig(
             new Deployment('utils/viruses/virus-best-random-10.js', { name: 'copy' })
         ),
@@ -80,50 +80,50 @@ export const phases: Phase[] = [
         new PhaseConfig(
             new Deployment('utils/viruses/virus-best-random-10.js', { name: 'copy' })
         ),
-        new PhaseRequirements(5, 25, 2 ** 7, 0, [])
+        new PhaseRequirements(6, 25, 2 ** 7, 0, [])
     ),
-    new Phase(
-        "4 - Servers 1TB",
-        new PhaseConfig(
-            new Deployment('utils/viruses/virus-best-random-10.js', { name: 'copy' })
-        ),
-        new PhaseRequirements(5, 25, 2 ** 10, 0, [])
-    ),
-    new Phase(
-        "5 - Formulas",
-        new PhaseConfig(
-            new Deployment('utils/viruses/virus-best-random-10.js', { name: 'copy' })
-        ),
-        new PhaseRequirements(5, 25, 2 ** 10, 0, ["Formulas.exe"])
-    ),
-    new Phase(
-        "6 - Servers 4TB",
-        new PhaseConfig(
-            new Deployment('utils/viruses/loops/virus-loop-coordinator.js', { name: 'run-once' })
-        ),
-        new PhaseRequirements(5, 25, 2 ** 12, 0, ["Formulas.exe"])
-    ),
-    new Phase(
-        "7 - Hacking level 2_500 + Daedalus + Server 64TB",
-        new PhaseConfig(
-            new Deployment('utils/viruses/virus-best-hack-10.js', { name: 'copy' })
-        ),
-        new PhaseRequirements(5, 25, 2 ** 16, 2_500, ["Formulas.exe"])
-    ),
-    new Phase(
-        "8 - Servers 256TB",
-        new PhaseConfig(
-            new Deployment('utils/viruses/virus-best-hack-10.js', { name: 'copy' })
-        ),
-        new PhaseRequirements(5, 25, 2 ** 18, 2_500, ["Formulas.exe"])
-    ),
-    new Phase(
-        "9 - Servers 1PB",
-        new PhaseConfig(
-            new Deployment('utils/viruses/virus-best-hack-10.js', { name: 'copy' })
-        ),
-        new PhaseRequirements(5, 25, 2 ** 20, 2_500, ["Formulas.exe"], ["Daedalus"])
-    ),
+    // new Phase(
+    //     "4 - Servers 1TB",
+    //     new PhaseConfig(
+    //         new Deployment('utils/viruses/virus-best-random-10.js', { name: 'copy' })
+    //     ),
+    //     new PhaseRequirements(5, 25, 2 ** 10, 0, [])
+    // ),
+    // new Phase(
+    //     "5 - Formulas",
+    //     new PhaseConfig(
+    //         new Deployment('utils/viruses/virus-best-random-10.js', { name: 'copy' })
+    //     ),
+    //     new PhaseRequirements(5, 25, 2 ** 10, 0, ["Formulas.exe"])
+    // ),
+    // new Phase(
+    //     "6 - Servers 4TB",
+    //     new PhaseConfig(
+    //         new Deployment('utils/viruses/loops/virus-loop-coordinator.js', { name: 'run-once' })
+    //     ),
+    //     new PhaseRequirements(5, 25, 2 ** 12, 0, ["Formulas.exe"])
+    // ),
+    // new Phase(
+    //     "7 - Hacking level 2_500 + Daedalus + Server 64TB",
+    //     new PhaseConfig(
+    //         new Deployment('utils/viruses/virus-best-hack-10.js', { name: 'copy' })
+    //     ),
+    //     new PhaseRequirements(5, 25, 2 ** 16, 2_500, ["Formulas.exe"])
+    // ),
+    // new Phase(
+    //     "8 - Servers 256TB",
+    //     new PhaseConfig(
+    //         new Deployment('utils/viruses/virus-best-hack-10.js', { name: 'copy' })
+    //     ),
+    //     new PhaseRequirements(5, 25, 2 ** 18, 2_500, ["Formulas.exe"])
+    // ),
+    // new Phase(
+    //     "9 - Servers 1PB",
+    //     new PhaseConfig(
+    //         new Deployment('utils/viruses/virus-best-hack-10.js', { name: 'copy' })
+    //     ),
+    //     new PhaseRequirements(5, 25, 2 ** 20, 2_500, ["Formulas.exe"], ["Daedalus"])
+    // ),
     new Phase(
         "10 - 6 exploits (infinity)",
         new PhaseConfig(
