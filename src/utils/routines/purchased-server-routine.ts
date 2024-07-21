@@ -1,8 +1,5 @@
 import { NS } from "@ns";
 import { Phase } from "../phases";
-import { deploy } from "../deploy";
-import { minPurchasedServerRam } from "../purchased-server";
-import { getIndex } from "../index-host-mapping";
 
 export function buyServersRoutine(ns: NS, phase: Phase) {
     const ownedServers = ns.getPurchasedServers();
@@ -42,4 +39,9 @@ export function upgradeServersRoutine(ns: NS, phase: Phase) {
         }
     }
     return upgraded
+}
+
+export function minPurchasedServerRam(ns: NS) {
+    return ns.getPurchasedServers()
+        .reduce((minRam, server) => Math.min(minRam, ns.getServerMaxRam(server)), Number.MAX_VALUE);
 }
