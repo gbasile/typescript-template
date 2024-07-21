@@ -1,5 +1,5 @@
 import { NS } from "@ns";
-import { availablePortExploits, portExploits } from "../server-hacking";
+import { availablePortExploits, portExploits } from "../server.hack";
 import { networkingTools } from "../networking-tools";
 import { Phase } from "../phases";
 

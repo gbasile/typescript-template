@@ -1,5 +1,5 @@
 import { NS } from "@ns";
-import { availablePortExploits } from "./server-hacking";
+import { availablePortExploits } from "./server.hack";
 import { minPurchasedServerRam } from "./purchased-server";
 
 export type PhaseTarget =

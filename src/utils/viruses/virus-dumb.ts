@@ -1,6 +1,6 @@
 import { NS } from "@ns";
-import { canGainControl, gainControl } from "../server-hacking";
-import { canRunScript, validHackTarget } from "../server-exploring";
+import { canGainControl, gainControl } from "../server.hack";
+import { canRunScript, validHackTarget } from "../server.explore";
 
 /** @param {NS} ns */
 export async function main(ns: NS) {

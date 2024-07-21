@@ -1,8 +1,8 @@
 import { NS } from "@ns";
 import { deploy } from "./deploy";
-import { canGainControl } from "./server-hacking";
+import { canGainControl } from "./server.hack";
 import { Phase } from "./phases";
-import { available_servers, canRunScript } from "./server-exploring";
+import { available_servers, canRunScript } from "./server.explore";
 import { getIndex } from "./index-host-mapping";
 
 export async function startAutoDeploy(ns: NS, phase: Phase) {

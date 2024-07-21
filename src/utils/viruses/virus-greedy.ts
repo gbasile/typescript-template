@@ -1,6 +1,6 @@
 import { NS } from "@ns";
-import { canGainControl, gainControl } from "../server-hacking";
-import { available_servers, validHackTarget } from "../server-exploring";
+import { canGainControl, gainControl } from "../server.hack";
+import { available_servers, validHackTarget } from "../server.explore";
 
 /** @param {NS} ns */
 export async function main(ns: NS): Promise<void> {

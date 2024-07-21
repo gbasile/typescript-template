@@ -1,6 +1,6 @@
 import { NS } from "@ns";
-import { available_servers } from "./server-exploring";
-import { gainControl } from "./server-hacking";
+import { available_servers } from "./server.explore";
+import { gainControl } from "./server.hack";
 
 /** @param {NS} ns */
 export async function main(ns: NS) {

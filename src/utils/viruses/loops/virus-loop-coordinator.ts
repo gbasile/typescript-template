@@ -1,6 +1,6 @@
 import { NS } from "@ns";
-import { available_servers, canRunScript } from "/utils/server-exploring";
-import { canGainControl, gainControl } from "/utils/server-hacking";
+import { canGainControl, gainControl } from "/utils/server.hack";
+import { available_servers, canRunScript } from "/utils/server.explore";
 
 const hackRatio = 0.10;
 const weakenRatio = 0.10;
