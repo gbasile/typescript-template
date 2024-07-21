@@ -1,9 +1,9 @@
 import { NS } from "@ns";
-import { startAutoDeploy } from "./utils/deployer";
 import { nextPhase, requirementsMet } from "./utils/automation/phases";
 import { portExploitsRoutine } from "./utils/automation/routines/routine.ports.exploits";
 import { buyServersRoutine, upgradeServersRoutine } from "./utils/automation/routines/routine.buy.server";
 import { networkingToolsRoutine } from "./utils/automation/routines/routine.networking.tools";
+import { startAutoDeploy } from "./utils/automation/deployer";
 
 
 /** @param {NS} ns */
