@@ -2,51 +2,38 @@ import { NS } from "@ns";
 
 /** @param {NS} ns */
 export async function main(ns: NS) {
-    const servers = await available_servers(ns, "home");
+    const servers = await available_servers(ns);
     servers.forEach(
         (server) => {
-            ns.tprint(`${server.name}`)
+            ns.tprint(`${server}`)
         }
     )
 }
 
-export class ServerInfo {
-    name: string;
-    maxMoney: number;
-    moneyAvailable: number;
-
-    constructor(name: string, maxMoney: number, moneyAvailable: number) {
-        this.name = name;
-        this.maxMoney = maxMoney;
-        this.moneyAvailable = moneyAvailable
-    }
-}
-
 export const notHackableServers = new Set<string>(['CSEC', 'darkweb', 'home']);
 
-export async function available_servers(ns: NS, target: string, max_depth: number = 1000): Promise<ServerInfo[]> {
-    const server_infos = new Array<ServerInfo>();
-    await get_server_infos(ns, target, server_infos, 0, max_depth)
+export async function available_servers(ns: NS, from: string = "home", max_depth: number = 1000): Promise<string[]> {
+    const servers = new Array<string>();
+    await explore_servers(ns, from, servers, 0, max_depth)
 
-    return server_infos;
+    return servers;
 }
 
-async function get_server_infos(ns: NS, target: string, server_infos: Array<ServerInfo>, depth: number, max_depth: number) {
+async function explore_servers(ns: NS, from: string, visited: Array<string>, depth: number, max_depth: number) {
     if (depth >= max_depth) {
         return;
     }
     // Avoid revisiting hosts
-    if (server_infos.map((s) => s.name).includes(target)) {
+    if (visited.map((s) => s).includes(from)) {
         return;
     }
 
-    var hosts: string[] = ns.scan(target);
-    if (target != "home") {
-        const server_info = new ServerInfo(target, ns.getServerMaxMoney(target), ns.getServerMoneyAvailable(target));
-        server_infos.push(server_info);
+    var hosts: string[] = ns.scan(from);
+    if (from != "home") {
+        visited.push(from);
     }
 
     for (var host of hosts) {
-        await get_server_infos(ns, host, server_infos, depth + 1, max_depth);
+        await explore_servers(ns, host, visited, depth + 1, max_depth);
     }
 }

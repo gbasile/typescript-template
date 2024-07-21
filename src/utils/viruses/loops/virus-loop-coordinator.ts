@@ -11,10 +11,10 @@ var ramAvailable = 0;
 /** @param {NS} ns */
 export async function main(ns: NS) {
     const target = await bestTarget(ns);
-    const serverInfos = await available_servers(ns, "home");
+    const serverInfos = await available_servers(ns);
     const hackableHosts = serverInfos
-        .filter((server) => canGainControl(ns, server.name))
-        .map((server) => server.name);
+        .filter((server) => canGainControl(ns, server))
+        .map((server) => server);
     const allHosts = ['home', ...hackableHosts];
 
     ramAvailable = allHosts.reduce((acc, host) => acc + ns.getServerMaxRam(host), 0);
@@ -91,15 +91,15 @@ function desiredRam(ns: NS): [number, number, number] {
 }
 
 async function bestTarget(ns: NS) {
-    const servers = await available_servers(ns, "home", 10);
+    const servers = await available_servers(ns);
     const bestServers = servers
-        .filter((server) => canGainControl(ns, server.name))
-        .filter((server) => !notHackableServers.has(server.name))
-        .filter((server) => !server.name.startsWith('minion'))
-        .filter((server) => ns.getServerRequiredHackingLevel(server.name) < ns.getHackingLevel() / 2)
-        .filter((server) => server.moneyAvailable != 0)
-        .sort((a, b) => getFitness(ns, b.name) - getFitness(ns, a.name));
-    return bestServers[0].name;
+        .filter((server) => canGainControl(ns, server))
+        .filter((server) => !notHackableServers.has(server))
+        .filter((server) => !server.startsWith('minion'))
+        .filter((server) => ns.getServerRequiredHackingLevel(server) < ns.getHackingLevel() / 2)
+        .filter((server) => ns.getServerMoneyAvailable(server) != 0)
+        .sort((a, b) => getFitness(ns, b) - getFitness(ns, a));
+    return bestServers[0];
 }
 
 function getFitness(ns: NS, host: string) {

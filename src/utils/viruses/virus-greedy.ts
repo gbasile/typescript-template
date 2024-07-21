@@ -6,7 +6,6 @@ import { available_servers } from "../server-exploring";
 export async function main(ns: NS): Promise<void> {
     while (true) {
         const servers = (await available_servers(ns, "home"))
-            .map((server) => server.name)
             .filter((server) => canGainControl(ns, server))
             .filter((server) => !server.startsWith('minion'))
             .sort((a, b) => ns.getServerMoneyAvailable(b) - ns.getServerMoneyAvailable(a));

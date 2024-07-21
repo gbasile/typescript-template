@@ -11,9 +11,7 @@ export async function startAutoDeploy(ns: NS, phase: Phase) {
 }
 
 async function autoDeploy(ns: NS, phase: Phase) {
-    const server_infos = await available_servers(ns, "home", 10);
-    const servers = server_infos
-        .map((server) => server.name);
+    const servers = await available_servers(ns);
 
     var ownedServers = servers
         .filter((server) => canGainControl(ns, server))

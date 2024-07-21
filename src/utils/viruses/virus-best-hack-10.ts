@@ -42,22 +42,22 @@ export async function main(ns: NS) {
 }
 
 async function getTarget(ns: NS, ideal_index: number): Promise<string> {
-    const servers = await available_servers(ns, "home", 10);
+    const servers = await available_servers(ns);
 
     const bestServers = servers
-        .filter((server) => canGainControl(ns, server.name))
-        .filter((server) => !notHackableServers.has(server.name))
-        .filter((server) => !server.name.startsWith('minion'))
-        .filter((server) => server.moneyAvailable != 0)
-        .filter((server) => !["n00dles", "zer0", "nectar-net", "omega-net"].includes(server.name))
-        .sort((a, b) => getFitness(ns, b.name) - getFitness(ns, a.name));
+        .filter((server) => canGainControl(ns, server))
+        .filter((server) => !notHackableServers.has(server))
+        .filter((server) => !server.startsWith('minion'))
+        .filter((server) => ns.getServerMoneyAvailable(server) != 0)
+        .filter((server) => !["n00dles", "zer0", "nectar-net", "omega-net"].includes(server))
+        .sort((a, b) => getFitness(ns, b) - getFitness(ns, a));
 
     if (bestServers.length == 0) {
-        ns.tprint(`ERROR: Not hackable servers available anymore, available servers: ${servers.reduce((acc, server) => `${acc}, [${server.name}|${server.moneyAvailable}|${server.maxMoney}}]`, "")}`);
+        ns.tprint(`ERROR: Not hackable servers available anymore, available servers: ${servers.join(',')}`);
         return "nectar-net"
     }
 
-    return bestServers[ideal_index % bestServers.length].name;
+    return bestServers[ideal_index % bestServers.length];
 }
 
 function getFitness(ns: NS, host: string) {
