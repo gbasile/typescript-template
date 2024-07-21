@@ -1,7 +1,5 @@
 import { NS } from "@ns";
-import { availablePortExploits, portExploits } from "../server.hack";
-import { networkingTools } from "../networking-tools";
-import { Phase } from "../phases";
+import { networkingTools } from "/utils/server.tools";
 
 export function networkingToolsRoutine(ns: NS) {
     printAvailableNetworkingTools(ns);

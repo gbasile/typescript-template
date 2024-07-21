@@ -1,5 +1,5 @@
 import { NS } from "@ns";
-import { connectCommand } from "./find-server";
+import { connectCommand } from "./server.find";
 
 export const portExploits: [string, number, (ns: NS, host: string) => void][] = [
     ["BruteSSH.exe", 500_000, (ns: NS, host: string) => ns.brutessh(host)],

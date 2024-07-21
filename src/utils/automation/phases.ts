@@ -1,6 +1,6 @@
 import { NS } from "@ns";
-import { availablePortExploits } from "./server.hack";
-import { minPurchasedServerRam } from "./routines/purchased-server-routine";
+import { availablePortExploits } from "../server.hack";
+import { minPurchasedServerRam } from "./routines/routine.buy.server";
 
 export type PhaseTarget =
     | { type: "dumb"; }
