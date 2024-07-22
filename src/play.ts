@@ -3,11 +3,14 @@ import { nextPhase, requirementsMet } from "./utils/automation/phases";
 import { portExploitsRoutine } from "./utils/automation/routines/routine.ports.exploits";
 import { buyServersRoutine, upgradeServersRoutine } from "./utils/automation/routines/routine.buy.server";
 import { networkingToolsRoutine } from "./utils/automation/routines/routine.networking.tools";
-import { startAutoDeploy } from "./utils/automation/deployer";
+import { startAutoDeploy } from "./utils/deployer";
 
 
 /** @param {NS} ns */
 export async function main(ns: NS): Promise<void> {
+    //Logs are nice to know whats going on
+    disableLogs(ns);
+
     // await buyRouterRoutine(ns);
     var phase;
     while (phase = nextPhase(ns)) {
@@ -33,4 +36,15 @@ export async function main(ns: NS): Promise<void> {
             await ns.sleep(5_000)
         }
     }
+}
+
+function disableLogs(ns: NS) {
+    ns.disableLog('sleep');
+    ns.disableLog('getServerMaxRam');
+    ns.disableLog('getServerUsedRam');
+    ns.disableLog('getServerSecurityLevel');
+    ns.disableLog('getServerMinSecurityLevel');
+    ns.disableLog('getServerMaxMoney');
+    ns.disableLog('getServerMoneyAvailable');
+    ns.disableLog('getHackingLevel');
 }
