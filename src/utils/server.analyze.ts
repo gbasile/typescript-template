@@ -41,7 +41,7 @@ export function calculate_threads(ns: NS, target: string, porcentageTarget: numb
 
     const hackThreads = Math.ceil(ns.hackAnalyzeThreads(target, S_MAX_MONEY * porcentageTarget));
     const weakenThreads = Math.ceil(hackThreads * HACK_PER_THREAD);
-    const growThreads = Math.ceil(ns.growthAnalyze(target, 1 / (1 - HACK_MONEY_PERCENTAGE * hackThreads)));
+    const growThreads = Math.ceil(ns.growthAnalyze(target, Math.min(1, 1 / (1 - HACK_MONEY_PERCENTAGE * hackThreads))));
     const weaken2Threads = Math.ceil(growThreads * GROW_PER_THREAD);
 
     return [
