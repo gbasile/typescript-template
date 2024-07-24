@@ -11,6 +11,7 @@ export async function main(ns: NS) {
 
     while (true) {
         const servers = await available_servers(ns);
+        // ns.tprint(`${servers}`)
         const bestServers = servers
             .filter((server) => canGainControl(ns, server))
             .filter(validHackTarget)

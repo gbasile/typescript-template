@@ -17,7 +17,7 @@ export async function main(ns: NS): Promise<void> {
 
 // Returns offset for the new batch
 export async function prepare(ns: NS, source: string, target: string) {
-    ns.tprint(`Preparing ${target} from ${source}`);
+    // ns.tprint(`Preparing ${target} from ${source}`);
     if (ns.getServerMaxRam(source) == 0) {
         ns.tprint(`No ram available on ${source}`)
         return;
@@ -38,8 +38,8 @@ export async function prepare(ns: NS, source: string, target: string) {
 
     const startMoney = ns.getServerMoneyAvailable(target);
     const startSec = ns.getServerSecurityLevel(target);
-    ns.tprint(`Money       : ${ns.formatNumber(startMoney, 2)} / ${ns.formatNumber(S_MAX_MONEY, 2)} (${ns.formatPercent(startMoney / S_MAX_MONEY)})`)
-    ns.tprint(`Security    : ${ns.formatNumber(startSec, 1)} / ${ns.formatNumber(S_MIN_SEC_LEVEL, 1)} = +${startSec - S_MIN_SEC_LEVEL}`);
+    // ns.tprint(`Money       : ${ns.formatNumber(startMoney, 2)} / ${ns.formatNumber(S_MAX_MONEY, 2)} (${ns.formatPercent(startMoney / S_MAX_MONEY)})`)
+    // ns.tprint(`Security    : ${ns.formatNumber(startSec, 1)} / ${ns.formatNumber(S_MIN_SEC_LEVEL, 1)} = +${startSec - S_MIN_SEC_LEVEL}`);
 
     while (!optimalState(ns, target)) {
         const WEAKEN_PER_THREAD = ns.weakenAnalyze(1, ns.getServer(target).cpuCores);
@@ -76,9 +76,9 @@ export async function prepare(ns: NS, source: string, target: string) {
     const money = Math.max(ns.getServerMoneyAvailable(target), 0.1);
     const minSec = ns.getServerMinSecurityLevel(target);
     const sec = ns.getServerSecurityLevel(target);
-    ns.tprint(`${target} ready `);
-    ns.tprint(`Money       : ${ns.formatNumber(money, 2)} / ${ns.formatNumber(maxMoney, 2)} (${ns.formatPercent(money / maxMoney)})`)
-    ns.tprint(`Security    : ${ns.formatNumber(sec, 1)} / ${ns.formatNumber(minSec, 1)} = +${sec - minSec}`);
+    // ns.tprint(`${target} ready `);
+    // ns.tprint(`Money       : ${ns.formatNumber(money, 2)} / ${ns.formatNumber(maxMoney, 2)} (${ns.formatPercent(money / maxMoney)})`)
+    // ns.tprint(`Security    : ${ns.formatNumber(sec, 1)} / ${ns.formatNumber(minSec, 1)} = +${sec - minSec}`);
 }
 
 export function optimalState(ns: NS, target: string) {

@@ -18,14 +18,14 @@ export async function main(ns: NS): Promise<void> {
 
     var cycle = 0;
     while (true) {
-        ns.tprint(`Start cycle ${cycle}`);
+        ns.print(`Start cycle ${cycle}`);
         const BATCH_OFFSET = 4 * SAFETY_DELAY;
         const [, weakenTime, ,] = calculate_times(ns, target);
         const BATCH_DURATION = BATCH_OFFSET + weakenTime;
         const BATCHES_PER_CYCLE = Math.floor(BATCH_DURATION / BATCH_OFFSET);
         const CYCLE_DURATION = BATCHES_PER_CYCLE * BATCH_OFFSET;
 
-        ns.tprint(`Batch duration = ${BATCH_DURATION} Batches/Cycle = ${BATCHES_PER_CYCLE}, Cycle Duration = ${CYCLE_DURATION}`);
+        ns.print(`Batch duration = ${BATCH_DURATION} Batches/Cycle = ${BATCHES_PER_CYCLE}, Cycle Duration = ${CYCLE_DURATION}`);
 
         for (var i = 0; i < BATCHES_PER_CYCLE; i++) {
             const [hackThreads, weakenThreads, growThreads, weaken2Threads] = calculate_threads(ns, target, TARGET_PERCENTAGE);
@@ -39,12 +39,13 @@ export async function main(ns: NS): Promise<void> {
                 await ns.sleep(BATCH_OFFSET);
             }
 
+            ns.print(`Run batch ${source} -> ${target}`);
             singleBatch(ns, source, target, i, i * SAFETY_DELAY);
         }
 
-        ns.tprint(`Cycle ${cycle} ended`);
+        ns.print(`Cycle ${cycle} ended`);
         if (!optimalState(ns, target)) {
-            ns.tprint(`Not optimal state, readjusting`);
+            ns.print(`Not optimal state, readjusting`);
             killNextHack(ns);
         }
 
