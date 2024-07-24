@@ -146,7 +146,7 @@ export function nextPhase(ns: NS): Phase {
 export function requirementsMet(ns: NS, requirements: PhaseRequirements) {
 
     // ns.tprint(`${requirements.portsExploited <= availablePortExploits(ns).length}`);
-    // ns.tprint(`${requirements.purchasedServer <= ns.getPurchasedServers().length}`);
+    // ns.tprint(`${requirements.purchasedServer} < ${ns.getPurchasedServers().length} = ${requirements.purchasedServer <= ns.getPurchasedServers().length}`);
     // ns.tprint(`${requirements.purchasedServerRAM} <= ${minPurchasedServerRam(ns)} = ${requirements.purchasedServerRAM <= minPurchasedServerRam(ns)}`);
     return requirements.portsExploited <= availablePortExploits(ns).length
         && requirements.purchasedServer <= ns.getPurchasedServers().length

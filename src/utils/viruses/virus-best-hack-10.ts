@@ -4,7 +4,7 @@ import { available_servers, canRunScript, validHackTarget } from "../server.expl
 
 /** @param {NS} ns */
 export async function main(ns: NS) {
-    const ideal_index = ns.args[0] as number;
+    const ideal_index = ns.args[0] as number || 0;
 
     const availableThreads = ns.ps(ns.getHostname())
         .filter((process => process.filename == ns.getScriptName()))
@@ -46,7 +46,6 @@ async function getTarget(ns: NS, ideal_index: number): Promise<string> {
 
     const bestServers = servers
         .filter((server) => canGainControl(ns, server))
-        .filter(canRunScript)
         .filter(validHackTarget)
         .filter((server) => ns.getServerMoneyAvailable(server) != 0)
         .filter((server) => !["n00dles", "zer0", "nectar-net", "omega-net"].includes(server))

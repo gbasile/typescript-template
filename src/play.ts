@@ -47,4 +47,5 @@ function disableLogs(ns: NS) {
     ns.disableLog('getServerMaxMoney');
     ns.disableLog('getServerMoneyAvailable');
     ns.disableLog('getHackingLevel');
+    ns.clearLog();
 }

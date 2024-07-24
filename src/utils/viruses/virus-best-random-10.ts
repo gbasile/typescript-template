@@ -13,7 +13,6 @@ export async function main(ns: NS) {
         const servers = await available_servers(ns);
         const bestServers = servers
             .filter((server) => canGainControl(ns, server))
-            .filter(canRunScript)
             .filter(validHackTarget)
             .filter((server) => ns.getServerRequiredHackingLevel(server) < ns.getHackingLevel() / 2)
             .filter((server) => ns.getServerMoneyAvailable(server) != 0)

@@ -13,7 +13,8 @@ export async function main(ns: NS) {
     const target = await bestTarget(ns);
     const servers = await available_servers(ns);
     const hackableHosts = servers
-        .filter((server) => canGainControl(ns, server));
+        .filter((server) => canGainControl(ns, server))
+        .filter(canRunScript)
     const allHosts = ['home', ...hackableHosts];
 
     ramAvailable = allHosts.reduce((acc, host) => acc + ns.getServerMaxRam(host), 0);

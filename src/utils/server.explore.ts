@@ -1,4 +1,5 @@
 import { NS } from "@ns";
+import { canGainControl } from "./server.hack";
 
 /** @param {NS} ns */
 export async function main(ns: NS) {
@@ -11,11 +12,11 @@ export function canRunScript(server: string) {
         return false
     }
 
-    return !server.startsWith('minion-')
+    return true;
 }
 
 export function validHackTarget(server: string) {
-    return server != "home" && !server.startsWith('minion-')
+    return server != "home" && !server.startsWith('minion-') && !['silver-helix'].includes(server)
 }
 
 export async function available_servers(ns: NS, from: string = "home", max_depth: number = 1000): Promise<string[]> {
