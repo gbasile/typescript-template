@@ -19,6 +19,39 @@ export function validHackTarget(server: string) {
     return server != "home" && !server.startsWith('minion-') && !['silver-helix'].includes(server)
 }
 
+export function availableWorkers(ns: NS): string[] {
+    const allWorkers = [
+        'home',
+        'minion-01',
+        'minion-02',
+        'minion-03',
+        'minion-04',
+        'minion-05',
+        'minion-06',
+        'minion-07',
+        'minion-08',
+        'minion-09',
+        'minion-10',
+        'minion-11',
+        'minion-12',
+        'minion-13',
+        'minion-14',
+        'minion-15',
+        'minion-16',
+        'minion-17',
+        'minion-18',
+        'minion-19',
+        'minion-20',
+        'minion-21',
+        'minion-22',
+        'minion-23',
+        'minion-24',
+        'minion-25'
+    ]
+
+    return allWorkers.filter((worker) => ns.serverExists(worker));
+}
+
 export async function available_servers(ns: NS, from: string = "home", max_depth: number = 1000): Promise<string[]> {
     const servers = new Array<string>();
     await explore_servers(ns, from, servers, 0, max_depth)

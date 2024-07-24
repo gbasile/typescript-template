@@ -1,6 +1,6 @@
 import { NS } from "@ns";
 import { canGainControl, gainControl } from "../server.hack";
-import { available_servers, canRunScript, validHackTarget } from "../server.explore";
+import { available_servers, validHackTarget } from "../server.explore";
 
 /** @param {NS} ns */
 export async function main(ns: NS) {
@@ -30,7 +30,7 @@ export async function main(ns: NS) {
         const securityThresh: number = ns.getServerMinSecurityLevel(target) * 1.1;
 
         if (ns.getServerSecurityLevel(target) > securityThresh) {
-            await ns.weaken(target);
+            await ns.weaken(target, { threads: availableThreads });
         } else if (ns.getServerMoneyAvailable(target) < moneyThresh) {
             const currentMoney = ns.getServerMoneyAvailable(target);
             const maxMoney = ns.getServerMaxMoney(target);

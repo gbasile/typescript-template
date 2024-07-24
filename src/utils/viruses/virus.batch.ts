@@ -16,6 +16,11 @@ export async function main(ns: NS): Promise<void> {
     disableLogs(ns);
     await prepare(ns, source, target);
 
+    if (ramAvailable(ns, source) < ramForBatch(ns, target)) {
+        ns.tprint(`Not enough ram to execute a batch on ${source} for target ${target}`);
+        return
+    }
+
     var cycle = 0;
     while (true) {
         ns.print(`Start cycle ${cycle}`);
@@ -28,29 +33,36 @@ export async function main(ns: NS): Promise<void> {
         ns.print(`Batch duration = ${BATCH_DURATION} Batches/Cycle = ${BATCHES_PER_CYCLE}, Cycle Duration = ${CYCLE_DURATION}`);
 
         for (var i = 0; i < BATCHES_PER_CYCLE; i++) {
-            const [hackThreads, weakenThreads, growThreads, weaken2Threads] = calculate_threads(ns, target, TARGET_PERCENTAGE);
-            const RAM_FOR_BATCH = Math.ceil(
-                hackThreads * ns.getScriptRam(HACK_SCRIPT) +
-                weakenThreads * ns.getScriptRam(WEAKEN_SCRIPT) +
-                growThreads * ns.getScriptRam(GROW_SCRIPT) +
-                weaken2Threads * ns.getScriptRam(WEAKEN_SCRIPT)
-            );
-            while (ramAvailable(ns, source) < RAM_FOR_BATCH) {
+
+            while (ramAvailable(ns, source) < ramForBatch(ns, target)) {
                 await ns.sleep(BATCH_OFFSET);
             }
 
             ns.print(`Run batch ${source} -> ${target}`);
-            singleBatch(ns, source, target, i, i * SAFETY_DELAY);
+            singleBatch(ns, source, target, i, i * BATCH_OFFSET);
         }
 
         ns.print(`Cycle ${cycle} ended`);
         if (!optimalState(ns, target)) {
-            ns.print(`Not optimal state, readjusting`);
-            killNextHack(ns);
+            const diffMoney = ns.getServerMaxMoney(target) - ns.getServerMoneyAvailable(target);
+            const hacksAmount = ns.getServerMaxMoney(target) / TARGET_PERCENTAGE
+            const hacksToKill = Math.ceil(diffMoney / hacksAmount);
+            ns.print(`Not optimal state, readjusting by killing the next ${hacksToKill} hacks`);
+            killFutureHacks(ns, hacksToKill);
         }
 
         cycle += 1;
     }
+}
+
+function ramForBatch(ns: NS, target: string) {
+    const [hackThreads, weakenThreads, growThreads, weaken2Threads] = calculate_threads(ns, target, TARGET_PERCENTAGE);
+    return Math.ceil(
+        hackThreads * ns.getScriptRam(HACK_SCRIPT) +
+        weakenThreads * ns.getScriptRam(WEAKEN_SCRIPT) +
+        growThreads * ns.getScriptRam(GROW_SCRIPT) +
+        weaken2Threads * ns.getScriptRam(WEAKEN_SCRIPT)
+    );
 }
 
 // Returns offset for the new batch
@@ -87,12 +99,13 @@ export function singleBatch(ns: NS, source: string, target: string, batchId: num
     ns.exec('utils/bin.weaken.js', source, weaken2Threads, target, weaken2StartTime, batchId);
 }
 
-function killNextHack(ns: NS) {
-    var cancelledFirstHack = false;
-    while (!cancelledFirstHack) {
+function killFutureHacks(ns: NS, amount: number) {
+    var toKill = amount;
+    var reachedEnd = false;
+    while (toKill != amount || reachedEnd) {
         var firstHackPid = hacksPids.shift()
         if (firstHackPid == undefined) {
-            cancelledFirstHack = true;
+            reachedEnd = true;
             continue;
         }
 
@@ -102,7 +115,7 @@ function killNextHack(ns: NS) {
 
         ns.tprint(`Killing ${firstHackPid}`);
         ns.kill(firstHackPid);
-        cancelledFirstHack = true;
+        toKill -= 1;
     }
 }
 

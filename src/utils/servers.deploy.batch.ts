@@ -1,7 +1,6 @@
 import { NS } from "@ns";
 import { canGainControl } from "./server.hack";
-import { Phase } from "./automation/phases";
-import { available_servers, canRunScript, validHackTarget } from "./server.explore";
+import { available_servers, availableWorkers, canRunScript, validHackTarget } from "./server.explore";
 
 
 /** @param {NS} ns */
@@ -10,21 +9,13 @@ export async function main(ns: NS) {
     await autoDeploy(ns);
 }
 async function autoDeploy(ns: NS) {
+    const workers = availableWorkers(ns);
     const servers = await available_servers(ns);
-
-    var workers = servers
-        .filter((server) => canGainControl(ns, server))
-        .filter((server) => ns.getServerMaxRam(server) > 16)
-        .filter(canRunScript)
-        .sort((a, b) => ns.getServerMaxRam(b) - ns.getServerMaxRam(a));
-
-    workers.unshift('home');
-
     var targets = servers
         .filter((server) => canGainControl(ns, server))
         .filter(canRunScript)
         .filter(validHackTarget)
-        // .filter((server) => ns.getServerRequiredHackingLevel(server) < ns.getHackingLevel() / 2)
+        .filter((server) => ns.getServerRequiredHackingLevel(server) < ns.getHackingLevel())
         .filter((server) => ns.getServerMoneyAvailable(server) != 0)
         .sort((a, b) => getFitness(ns, b) - getFitness(ns, a));
 

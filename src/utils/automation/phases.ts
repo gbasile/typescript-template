@@ -80,7 +80,7 @@ export const phases: Phase[] = [
         new PhaseConfig(
             new Deployment('utils/viruses/virus-best-random-10.js', { name: 'copy' })
         ),
-        new PhaseRequirements(6, 25, 2 ** 7, 0, [])
+        new PhaseRequirements(6, 25, 2 ** 10, 0, [])
     ),
     // new Phase(
     //     "4 - Servers 1TB",
