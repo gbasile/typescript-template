@@ -1,5 +1,5 @@
 import { NS } from "@ns";
-import { canGainControl } from "./server.hack";
+import { canGainControl, gainControl } from "./server.hack";
 import { available_servers, availableWorkers, canRunScript, validHackTarget } from "./server.explore";
 
 
@@ -9,6 +9,7 @@ export async function main(ns: NS) {
     await autoDeploy(ns);
 }
 async function autoDeploy(ns: NS) {
+    hackNetwork(ns);
     const workers = availableWorkers(ns);
     const servers = await available_servers(ns);
     var targets = servers
@@ -32,6 +33,7 @@ async function autoDeploy(ns: NS) {
             .forEach((file) => ns.scp(file, worker));
 
         ns.exec('utils/server.analyze.js', worker, 1, target);
+        ns.exec('utils/servers.money.js', worker, 1, target);
         ns.exec('utils/viruses/virus.batch.js', worker, 1, worker, target);
     }
 }
@@ -49,4 +51,12 @@ function getFitness(ns: NS, host: string) {
     const growthFactor = ns.getServerMoneyAvailable(host) * ns.getServerGrowth(host);
     const distanceFactor = 1 / 10 * ns.getServerRequiredHackingLevel(host) - ns.getHackingLevel()
     return ns.getServerMaxMoney(host) * growthFactor * distanceFactor
+}
+
+async function hackNetwork(ns: NS) {
+    const servers = await available_servers(ns);
+
+    servers
+        .filter((server) => canGainControl(ns, server))
+        .forEach((server) => gainControl(ns, server));
 }
