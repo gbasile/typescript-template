@@ -33,7 +33,9 @@ async function autoDeploy(ns: NS) {
             .forEach((file) => ns.scp(file, worker));
 
         ns.exec('utils/server.analyze.js', worker, 1, target);
-        ns.exec('utils/servers.money.js', worker, 1, target);
+        if (worker == 'home') {
+            ns.exec('utils/servers.money.js', worker, 1, target);
+        }
         ns.exec('utils/viruses/virus.batch.js', worker, 1, worker, target);
     }
 }
