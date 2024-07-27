@@ -14,7 +14,7 @@ export async function main(ns: NS) {
         const timeDiff = now - start;
 
         ns.clearLog();
-        ns.print(`Money growth rate = ${ns.formatNumber(moneyDiff / timeDiff)} / s`);
+        ns.print(`Money growth rate = ${ns.formatNumber((moneyDiff / timeDiff) * 1000, 3, 1000, true)} / s`);
     }
 }
 
