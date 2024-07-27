@@ -19,10 +19,10 @@ export function deploy(ns: NS, host: string, script: string, index: number) {
 
 
     ns.scp(script, host);
-    const dependencies = ['utils/server.hack.js', 'utils/server.explore.js', 'utils/server.find.js'];
-    for (var dependency of dependencies) {
-        ns.scp(dependency, host)
-    }
+    ns.ls('home', 'utils')
+        .forEach((file) => ns.scp(file, host));
+    ns.ls('home', 'utils/viruses')
+        .forEach((file) => ns.scp(file, host));
     const threads = Math.floor((ns.getServerMaxRam(host) - ns.getServerUsedRam(host)) / ns.getScriptRam(script));
 
     if (threads == 0) {
